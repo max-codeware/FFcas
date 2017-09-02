@@ -40,6 +40,16 @@ module Function
       return self == obj
     end
   
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric
     def +(obj)
       if not self.top then
         return nil unless (obj.is_a? Variable) && (self.depend? obj)
@@ -47,9 +57,9 @@ module Function
       if obj.is_a? BinaryOp then
         return (obj + self).reduce
       elsif obj.is_a? Negative then
-        obj.top = false
-        self.top = false
-        return Diff.new(self,obj.val)
+        # obj.top = false
+        # self.top = false
+        return self - obj.val
       elsif self == obj then
         self.top = false
         return Prod.new(2,self)
@@ -59,7 +69,17 @@ module Function
         return Sum.new(self,obj)
       end
     end
-  
+    
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric
     def -(obj)
       if not self.top then
         return nil unless (obj.is_a? Variable) && (self.depend? obj)
@@ -68,9 +88,9 @@ module Function
         obj = obj.invert
         return (self + obj).reduce
       elsif obj.is_a? Negative then
-        obj.top = false
-        self.top = false
-        return Sum.new(self,obj.val)
+        # obj.top = false
+        # self.top = false
+        return (self + obj.val).reduce
       elsif self == obj then
         return 0
       else
@@ -79,23 +99,80 @@ module Function
         return Diff.new(self,obj)
       end
     end
-  
+    
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric
     def *(obj)
       if not self.top then
         return nil unless (obj.is_a? Variable) && (self.depend? obj)
       end
+      if obj.is_a? BinaryOp then
+        return (obj * self).reduce
+      elsif obj.is_a? Negative then
+        self.top = false
+        return Negative.new(self * obj.val).reduce
+      elsif self == obj
+        self.top = false
+        obj.top = false 
+        return Pow.new(self,2)
+      else
+        self.top = false
+        obj.top = false
+        return Prod.new(self,obj)
+      end
     end
-  
+    
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric
     def /(obj)
       if not self.top then
         return nil unless (obj.is_a? Variable) && (self.depend? obj)
       end
+      if obj.is_a? BinaryOp then
+        return (obj / self)
+      elsif obj.is_a? Negative then
+        self.top = false
+        return Negative.new(self,obj.val).reduce
+      elsif self == obj then
+        return 1
+      else
+        self.top = false
+        obj.top = false
+        return Div.new(self,obj)
+      end
     end
-  
+    
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric
     def **(obj)
       if not self.top then
         return nil unless (obj.is_a? Variable) && (self.depend? obj)
       end
+      return Pow.new(self,obj)
     end
     
     # Calculates the differential

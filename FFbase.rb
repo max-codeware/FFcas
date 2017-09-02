@@ -47,6 +47,7 @@ module Function
     #
     # * **argument**: argument of the function
     def initialize(arg)
+      arg.top = false unless arg.is_a? BinaryOp
       @arg = arg
       self.top = true
     end
@@ -61,7 +62,7 @@ module Function
     #
     # * **argument**: boolean value
     def top=(val)
-      @top = false
+      @top = val
     end
     
     # * **returns**: top state (boolean value)
@@ -101,6 +102,7 @@ module Function
     #   * Costant
     #   * BinaryOp and children
     def initialize(val)
+      val.top = false unless val.is_a? BinaryOp
       @val = val
       self.top = true
     end
@@ -132,10 +134,17 @@ module Function
     def reduce
       if self.val.is_a? BinaryOp then
         return self.val.invert
-      elsif @val == 0
+      elsif self.val == 0
         return 0
+      elsif self.val.is_a? Negative
+        return self.val.val.reduce
       else
+        val = @val
         @val = @val.reduce
+        while val != @val
+          val = @val
+          @val = @val.reduce
+        end  
         return self
       end
     end
@@ -323,6 +332,14 @@ module Function
       end
     end
     
+    # Verifies if two negatives have the same value
+    #
+    # * **argument**: object for the comparison
+    # * **returns**: +true+ if the values are equal; +false+ else
+    def ==(obj)
+      return false unless obj.is_a? Negative
+      return self.val == obj.val
+    end
   end
 end
 

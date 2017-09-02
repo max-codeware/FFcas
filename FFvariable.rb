@@ -17,7 +17,7 @@ module Function
       self.top = true
     end
     
-    # Sets the position of negative: if top is true means that negative
+    # Sets the position of variable: if top is true means that negative
     # is not in a BinOp
     #
     # * **argument**: boolean value

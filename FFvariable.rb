@@ -17,12 +17,12 @@ module Function
       self.top = true
     end
     
-    # Sets the position of variable: if top is true means that negative
-    # is not in a BinOp
+    # Sets the position of variable: if top is true means that variable
+    # is a child
     #
     # * **argument**: boolean value
     def top=(val)
-      @top = false
+      @top = val
     end
     
     # * **returns**: top state (boolean value)
@@ -52,14 +52,14 @@ module Function
     #   * Numeric
     def +(obj)
       if not self.top then
-        return nil unless (obj.is_a? Variable) && (self.depend? obj)
+        return nil unless self.depend? obj
       end
       if obj.is_a? BinaryOp then
         return (obj + self).reduce
       elsif obj.is_a? Negative then
         # obj.top = false
         # self.top = false
-        return self - obj.val
+        return (self - obj.val).reduce
       elsif self == obj then
         self.top = false
         return Prod.new(2,self)
@@ -82,7 +82,7 @@ module Function
     #   * Numeric
     def -(obj)
       if not self.top then
-        return nil unless (obj.is_a? Variable) && (self.depend? obj)
+        return nil unless self.depend? obj
       end
       if obj.is_a? BinaryOp then
         obj = obj.invert
@@ -111,9 +111,7 @@ module Function
     #   * BinaryOp and children
     #   * Numeric
     def *(obj)
-      if not self.top then
-        return nil unless (obj.is_a? Variable) && (self.depend? obj)
-      end
+      return nil unless self.top
       if obj.is_a? BinaryOp then
         return (obj * self).reduce
       elsif obj.is_a? Negative then
@@ -141,11 +139,11 @@ module Function
     #   * BinaryOp and children
     #   * Numeric
     def /(obj)
-      if not self.top then
-        return nil unless (obj.is_a? Variable) && (self.depend? obj)
-      end
+      return nil unless self.top
       if obj.is_a? BinaryOp then
-        return (obj / self)
+        self.top = false
+        obj.top = false
+        return Div.new(self,obj).reduce
       elsif obj.is_a? Negative then
         self.top = false
         return Negative.new(self,obj.val).reduce
@@ -169,9 +167,7 @@ module Function
     #   * BinaryOp and children
     #   * Numeric
     def **(obj)
-      if not self.top then
-        return nil unless (obj.is_a? Variable) && (self.depend? obj)
-      end
+      return nil unless self.top
       return Pow.new(self,obj)
     end
     
@@ -184,10 +180,26 @@ module Function
       return 0
     end
     
+    # Inverts the sign of the variable
+    #
+    # * **returns**: new Negative
+    def invert
+      return Negative.new(self)
+    end
+    
     # * **returns**: self
     def reduce
       return self
     end
-
+    
+    # * **returns**: variable to block (self)
+    def to_b
+      return self
+    end
+    
   end
 end
+
+
+
+

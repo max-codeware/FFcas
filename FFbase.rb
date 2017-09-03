@@ -14,13 +14,14 @@ module Function
   class BinaryOp
   
     # Creates a new object of a binary operation initializing 
-    # the left and right side
+    # the left and right side and top
     #
     # * **argument**: left side of the operation
     # * **argument**: right side of the operation
-    def initialize(left,right)
-      @left  = left
-      @right = right
+    def initialize(lft,rht)
+      self.left  = lft
+      self.right = rht
+      self.top = true
     end
     
     # * **returns**: left side of the operation
@@ -32,7 +33,60 @@ module Function
     def right
       return @right
     end
-       
+    
+    # Sets the value of the left side
+    #
+    # * **argument**: left side value
+    def left=(obj)
+      @left = obj
+    end
+    
+    # Sets the value of the right side
+    #
+    # * **returns**: right side value
+    def right=(obj)
+      @right = obj
+    end
+    
+    # Sets the position of the binary op: if top is true means that 
+    # this binary op contains the top root
+    #
+    # * **argument**: boolean value
+    def top=(val)
+      @top = val
+    end
+    
+    # * **returns**: top state (boolean value)
+    def top
+      return @top
+    end  
+    
+    # Semplifies the left and right side
+    #
+    def reduce
+      temp = self.left
+      self.left = self.left.reduce
+      while temp != self.left do
+        temp = self.left
+        self.left = self.left.reduce
+      end
+      temp = self.right
+      self.left = self.right.reduce
+      while temp != self.left do
+        temp = self.left
+        self.left = self.left.reduce
+      end
+    end
+    
+    # Tells if this binary op depends on a specific variable
+    #
+    # * **argument**: object to check for dependencies
+    # * **returns**: +true+ if Negative depends on obj; +false+ else
+    def depend?(obj)
+      return false unless obj.is_a? Variable
+      return true if self.left.depend? obj
+      return self.right.depend? obj
+    end
   end
 
   ##
@@ -47,7 +101,7 @@ module Function
     #
     # * **argument**: argument of the function
     def initialize(arg)
-      arg.top = false unless arg.is_a? BinaryOp
+      arg.top = false
       @arg = arg
       self.top = true
     end
@@ -102,7 +156,7 @@ module Function
     #   * Costant
     #   * BinaryOp and children
     def initialize(val)
-      val.top = false unless val.is_a? BinaryOp
+      val.top = false
       @val = val
       self.top = true
     end
@@ -330,6 +384,13 @@ module Function
       else
         return 0
       end
+    end
+    
+    # Inverts the sign, that is -x => x
+    #
+    # * **returns**: self.arg
+    def invert
+      return self.arg
     end
     
     # Verifies if two negatives have the same value

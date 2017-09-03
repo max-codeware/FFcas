@@ -19,6 +19,9 @@ module Function
     # * **argument**: left side of the operation
     # * **argument**: right side of the operation
     def initialize(lft,rht)
+      lft = lft.clone; rht = rht.clone
+      lft.top = false
+      rht.top = false
       self.left  = lft
       self.right = rht
       self.top = true
@@ -64,16 +67,16 @@ module Function
     # Semplifies the left and right side
     #
     def reduce
-      temp = self.left
+      temp = self.left.clone
       self.left = self.left.reduce
       while temp != self.left do
-        temp = self.left
+        temp = self.left.clone
         self.left = self.left.reduce
       end
-      temp = self.right
+      temp = self.right.clone
       self.right = self.right.reduce
       while temp != self.left do
-        temp = self.left
+        temp = self.left.clone
         self.left = self.left.reduce
       end
       
@@ -206,7 +209,7 @@ module Function
       if self.val.is_a? BinaryOp then
         return self.val.invert
       elsif self.val == 0
-        return 0
+        return Number.new 0
       elsif self.val.is_a? Negative
         return self.val.val.reduce
       else
@@ -244,7 +247,7 @@ module Function
       elsif obj.is_a? BinaryOp then
         return (obj - self.val).reduce
       elsif self.val == obj
-        return 0
+        return Number.new 0
       else
         obj.top = false
         return Diff.new(obj,self.val)
@@ -323,7 +326,7 @@ module Function
       elsif obj.is_a? BinaryOp then
         return Negative.new(self.val / obj).reduce
       elsif self.val == obj then
-        return Negative.new(1)
+        return Negative.new(Number.new(1))
       else
         self.top = false
         return Div.new(self,obj)
@@ -355,7 +358,7 @@ module Function
     
     # * **returns**: Negative class in string format
     def to_s
-      if self.val.is_a? Power then
+      if self.val.is_a? Pow then
         left =  "(-#{self.val.left.to_s})"
         right = (self.val.right.is_a? Numeric) ? (self.val.right.to_s) : ("(#{self.val.right.to_s})")
         return "#{left}^#{right}"
@@ -368,7 +371,7 @@ module Function
     
     # * **returns**: Negative class in block format (string)
     def to_b
-      if self.val.is_a? Power then
+      if self.val.is_a? Pow then
         left =  "(-#{self.val.left.to_b})"
         right = (self.val.right.is_a? Numeric) ? (self.val.right.to_b) : ("(#{self.val.right.to_b})")
         return "#{left}**#{right}"
@@ -399,7 +402,7 @@ module Function
         diff.top = false
         return diff
       else
-        return 0
+        return Number.new 0
       end
     end
     

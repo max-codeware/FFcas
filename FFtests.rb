@@ -1,5 +1,7 @@
 #! /usr/bin/env ruby
 
+# require 'pry-byebug'
+# binding.pry
 
 files = Dir["*.rb","FFbinary_ops/*.rb","FFnumbers/*.rb"]
 files.each do |file|
@@ -10,7 +12,13 @@ x = Function::Variable.new "x"
 y = Function::Variable.new "y"
 k = Function::Variable.new "k"
 
+n1 = Function::Number.new 3
+n2 = Function::Number.new 4
+
+puts (x + n1 + Function::Negative.new(n2)).reduce
+
+
 r = x + y
 dr = r.diff(x)
 
-puts "d(#{r.to_s})/dx = #{dr}"
+puts "d(#{r.to_s})/dx = #{dr.to_s}"

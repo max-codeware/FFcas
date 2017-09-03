@@ -38,19 +38,19 @@ module Function
         return op
       elsif obj.is_a? BinaryOp 
         return nil unless self.top
-        self.top = false
         return Sum.new(self,obj).reduce   
       end
       lft = self.left + obj
       if !(lft == nil) then
         self.left = lft
+        return self
       else
         rht = self.right + obj
         if !(rht == nil) then
           self.right = rht
+          return self
         else
           return nil unless self.top
-          self.top = false
           return Sum.new(self,obj)
         end
       end
@@ -76,17 +76,18 @@ module Function
           return self + obj
         else
           return nil unless self.top
-          self.top = false
           return Diff.new(self,obj)
         end
       end
       lft = self.left - obj
       if !(lft == nil) then
         self.left = lft
+        return self
       else
         rht = self.right - obj
         if !(rht == nil) then
           self.right = rht
+          return self
         else
           return nil unless self.top
           return Diff.new(self,obj)
@@ -105,8 +106,6 @@ module Function
     #   * +nil+ if the operation can't be performed
     def *(obj)
       return nil unless self.top
-      self.top = false
-      obj.top = false
       return Prod.new(self,obj)
     end
     
@@ -121,8 +120,6 @@ module Function
     #   * +nil+ if the operation can't be performed
     def /(obj)
       return nil unless self.top
-      self.top = false
-      obj.top = false
       return Div.new(self,obj)
     end
       
@@ -137,8 +134,6 @@ module Function
     #   * +nil+ if the operation can't be performed
     def **(obj)
       return nil unless self.top
-      self.top = false
-      obj.top = false
       return Pow.new(self,obj)
     end
     
@@ -161,9 +156,9 @@ module Function
       elsif self.right == 0
         return self.left
       elsif self.left == self.right
-        return Prod.new(2,self.left)
+        return Prod.new(Number.new(2),self.left)
       elsif self.right.is_a? Negative
-        return Diff.new(self.left,self.right.val).reduce
+        return Diff.new(self.left,self.right.val)#.reduce
       else
         return self
       end
@@ -182,7 +177,7 @@ module Function
     # * **argument**: variable according to the differential must be calculated
     # * **returns**: result of the differential
     def diff(var)
-      return 0 unless self.depend? var
+      return Number.new 0 unless self.depend? var
       lft = self.left.diff(var)
       rht = self.right.diff(var)
       return Sum.new(lft,rht).reduce

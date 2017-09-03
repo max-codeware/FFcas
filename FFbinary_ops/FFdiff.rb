@@ -7,6 +7,10 @@ module Function
 
   class Diff < BinaryOp
   
+    def to_s
+      return "#{self.left.to_s}-#{self.right.to_s}"
+    end
+  
   end
  
 end

@@ -25,22 +25,27 @@ module Function
     end
     
     def +(obj)
-      return nil unless (self.top) || (obj.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj.is_a? Negative and obj.val.is_a? Number)
       return Number.new(self.val + obj.val) if obj.is_a? Number
-      self.top = false
+      return self - obj.val if obj.is_a? Negative
       return obj + self  if obj.is_a? BinaryOp
-      obj.top  = false
       return Sum.new(obj,self) 
     end
     
     def -(obj)
       return nil unless (self.top) || (obj.is_a? Number)
-      return Number.new(self.val - obj.val) if obj.is_a? Number
+      if obj.is_a? Number
+        if self.val > obj.val
+          return Number.new(self.val - obj.val) 
+        else
+          return Negative.new(obj - self) 
+        end
+      end
       if obj.is_a? BinaryOp
         obj = obj.invert
         return self + obj
       end
-      obj.top  = false
+      return Number.new(self.val + obj.val) if obj.is_a? Negative
       return Diff.new(obj.invert,self)       
     end
     
@@ -64,8 +69,30 @@ module Function
       return Pow.new(self,obj)
     end
     
+    def invert
+      return Negative.new self
+    end
+    
+    def reduce
+      return self
+    end
+    
+    def diff(var)
+      return Number.new 0
+    end
+    
+    def ==(obj)
+      return false unless (obj.is_a? Number) || (obj.is_a? Numeric)
+      return self.val == obj if obj.is_a? Numeric
+      return self.val == obj.val
+    end
+    
+    def depend?(obj)
+      return false
+    end
+    
     def to_s
-      return val
+      return val.to_s
     end
     
     def to_b
@@ -75,3 +102,11 @@ module Function
   end
 
 end
+
+
+
+
+
+
+
+

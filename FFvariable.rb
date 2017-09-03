@@ -61,11 +61,11 @@ module Function
         # self.top = false
         return (self - obj.val).reduce
       elsif self == obj then
-        self.top = false
-        return Prod.new(2,self)
+        # self.top = false
+        return Prod.new(Number.new(2),self)
       else
-        obj.top = false
-        self.top = false
+        # obj.top = false
+        # self.top = false
         return Sum.new(self,obj)
       end
     end
@@ -88,14 +88,10 @@ module Function
         obj = obj.invert
         return (self + obj).reduce
       elsif obj.is_a? Negative then
-        # obj.top = false
-        # self.top = false
         return (self + obj.val).reduce
       elsif self == obj then
-        return 0
+        return Number.new 0
       else
-        obj.top = false
-        self.top = false
         return Diff.new(self,obj)
       end
     end
@@ -115,15 +111,10 @@ module Function
       if obj.is_a? BinaryOp then
         return (obj * self).reduce
       elsif obj.is_a? Negative then
-        self.top = false
         return Negative.new(self * obj.val).reduce
       elsif self == obj
-        self.top = false
-        obj.top = false 
-        return Pow.new(self,2)
+        return Pow.new(self,Number.new(2))
       else
-        self.top = false
-        obj.top = false
         return Prod.new(self,obj)
       end
     end
@@ -141,17 +132,12 @@ module Function
     def /(obj)
       return nil unless self.top
       if obj.is_a? BinaryOp then
-        self.top = false
-        obj.top = false
         return Div.new(self,obj).reduce
       elsif obj.is_a? Negative then
-        self.top = false
         return Negative.new(self,obj.val).reduce
       elsif self == obj then
-        return 1
+        return Number.new 1
       else
-        self.top = false
-        obj.top = false
         return Div.new(self,obj)
       end
     end
@@ -176,8 +162,8 @@ module Function
     # * **argument**: variable according to the differential must be calculated
     # * **returns**: result of the differential
     def diff(var)
-      return 1 if self.depend? var
-      return 0
+      return Number.new 1 if self.depend? var
+      return Number.new 0
     end
     
     # Inverts the sign of the variable

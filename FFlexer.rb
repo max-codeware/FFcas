@@ -24,6 +24,7 @@ module Function
                  :ATAN     => /^[Aa][Tt][Aa][Nn]/,
                  :LOG      => /^[Ll][Oo][Gg]/,
                  :EXP      => /^[Ee][Xx][Pp]/, 
+                 :SQRT     => /^[Ss][Qq][Rr][Tt]/,
                  :VARIABLE => /^[a-zA-Z_][a-zA-Z0-9_]*/, 
                  :INTEGER  => /^[1-9][0-9]*/,
                  :FLOAT    => /^[0-9]*[.][0-9]*/,
@@ -35,6 +36,7 @@ module Function
                  :LPAR     => /^[(]/,
                  :RPAR     => /^[)]/,
                  :PI       => /^[P][I]/,
+                 :E        => /^[e]/,
                  :SPACE    => /^[" "]/,
                  :UNKNOWN  => /./
                }

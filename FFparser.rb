@@ -26,7 +26,7 @@ module Function
                       end,
                "/" => lambda do |a,b|
                         return a / b
-                      end
+                      end,
                "^" => lambda do |a,b|
                         return a ^ b
                       end
@@ -94,7 +94,7 @@ module Function
           return 1
         when /[*\/]/
           return 2
-        when /[^]/
+        when /\^/
           return 3
       end
     end

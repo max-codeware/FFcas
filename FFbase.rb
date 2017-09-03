@@ -76,6 +76,11 @@ module Function
         temp = self.left
         self.left = self.left.reduce
       end
+      
+      def ==(obj)
+        return false unless self.class == obj.class
+        return (self.left == obj.left) && (self.right == obj.right)
+      end
     end
     
     # Tells if this binary op depends on a specific variable
@@ -87,6 +92,7 @@ module Function
       return true if self.left.depend? obj
       return self.right.depend? obj
     end
+    
   end
 
   ##
@@ -102,8 +108,13 @@ module Function
     # * **argument**: argument of the function
     def initialize(arg)
       arg.top = false
-      @arg = arg
+      self.arg = arg
       self.top = true
+    end
+    
+    # Sets the argument of the math function
+    def arg=(obj)
+      @arg = obj
     end
     
     # * **returns**: argument of the function
@@ -135,7 +146,12 @@ module Function
     end
     
     def reduce
-      @arg = self.arg.reduce
+      self.arg = self.arg.reduce
+    end
+    
+    def depend?(obj)
+      return false unless obj.is_a? Variable
+      return self.arg.depend? obj
     end
   end
   
@@ -186,6 +202,7 @@ module Function
     #   * 0 if val is 0
     #   * Negative if there's nothing to change
     def reduce
+      @val = self.val.reduce
       if self.val.is_a? BinaryOp then
         return self.val.invert
       elsif self.val == 0

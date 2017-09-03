@@ -1,5 +1,6 @@
 #! /usr/bin/env ruby
 
+
 ##
 # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
 # License:: Distributed under MIT license
@@ -7,10 +8,25 @@ module Function
 
   class Sum < BinaryOp
   
+    alias :red :reduce 
+  
+    # Same of  BinaryOp
     def initialize(l,r)
       super
     end
-        
+    
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric  
+    #   * Variable 
+    #   * +nil+ if the operation can't be performed 
     def +(obj)
       obj.top = false
       if obj.is_a? Sum then
@@ -39,6 +55,18 @@ module Function
       end
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Numeric  
+    #   * Variable 
+    #   * +nil+ if the operation can't be performed
     def -(obj)
       obj.top = false
       unless obj.is_a? BinaryOp
@@ -65,6 +93,15 @@ module Function
       end
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Prod
+    #   * +nil+ if the operation can't be performed
     def *(obj)
       return nil unless self.top
       self.top = false
@@ -72,13 +109,31 @@ module Function
       return Prod.new(self,obj)
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Div
+    #   * +nil+ if the operation can't be performed
     def /(obj)
       return nil unless self.top
       self.top = false
       obj.top = false
       return Div.new(self,obj)
     end
-    
+      
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    # * **returns**:
+    #   * Pow
+    #   * +nil+ if the operation can't be performed
     def **(obj)
       return nil unless self.top
       self.top = false
@@ -86,6 +141,75 @@ module Function
       return Pow.new(self,obj)
     end
     
+    # Calls reduce of BinaryOp and then semplifies the sum according to the cases:
+    # * 0 + y    => x
+    # * x + 0    => y
+    # * x + x    => 2*x
+    # * x + (-y) => x - y
+    # * x + y    => x + y
+    #
+    # * **returns**:
+    #   * Variable
+    #   * BinaryOp and children
+    #   * Negative
+    #   * Numeric
+    def reduce
+      self.red
+      if self.left == 0
+        return self.right
+      elsif self.right == 0
+        return self.left
+      elsif self.left == self.right
+        return Prod.new(2,self.left)
+      elsif self.right.is_a? Negative
+        return Diff.new(self.left,self.right.val).reduce
+      else
+        return self
+      end
+    end
+    
+    # Inverts all the signs
+    #
+    # * **returns**: Diff
+    def invert
+      lft = self.left.invert
+      return Diff.new(lft,self.right).reduce
+    end
+    
+    # Calculates the differential
+    #
+    # * **argument**: variable according to the differential must be calculated
+    # * **returns**: result of the differential
+    def diff(var)
+      return 0 unless self.depend? var
+      lft = self.left.diff(var)
+      rht = self.right.diff(var)
+      return Sum.new(lft,rht).reduce
+    end
+    
+    # * **returns**: string representation of the class
+    def to_s
+      return "#{self.left.to_s}+#{self.right.to_s}"
+    end
+    
+    # * **returns**: string representation of a block
+    def to_b
+      return "#{self.left.to_b}+#{self.right.to_b}"
+    end
+    
   end
-
+  
 end
+
+
+
+
+
+
+
+
+
+
+
+
+

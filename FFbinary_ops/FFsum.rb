@@ -1,5 +1,6 @@
 #! /usr/bin/env ruby
 
+#require "pry-byebug"
 
 ##
 # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
@@ -198,7 +199,7 @@ module Function
     end
     
   end
-  
+#binding.pry  
 end
 
 

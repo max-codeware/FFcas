@@ -71,7 +71,7 @@ module Function
         self.left = self.left.reduce
       end
       temp = self.right
-      self.left = self.right.reduce
+      self.right = self.right.reduce
       while temp != self.left do
         temp = self.left
         self.left = self.left.reduce

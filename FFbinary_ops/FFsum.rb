@@ -87,21 +87,5 @@ module Function
     end
     
   end
-  
-  class Diff < BinaryOp
-  
-  end
-  
-  class Prod < BinaryOp
-  
-  end
-  
-  class Div < BinaryOp
-  
-  end
-  
-  class Pow < BinaryOp
-  
-  end
 
 end

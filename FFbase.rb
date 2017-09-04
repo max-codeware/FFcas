@@ -64,7 +64,7 @@ module Function
       return @top
     end  
     
-    # Semplifies the left and right side
+    # Simplifies the left and right side
     #
     def reduce
       temp = self.left.clone
@@ -148,10 +148,16 @@ module Function
       return self.arg == obj.arg
     end
     
+    # Simplifies the left and right side
+    #
     def reduce
       self.arg = self.arg.reduce
     end
     
+    # Tells if the current function depends on a specific variable
+    #
+    # * **argument**: object to check for dependencies
+    # * **returns**: +true+ if Negative depends on obj; +false+ else
     def depend?(obj)
       return false unless obj.is_a? Variable
       return self.arg.depend? obj
@@ -198,7 +204,7 @@ module Function
       return @top
     end
     
-    # Semplifies itself
+    # Simplifies itself
     #
     # * **returns**:
     #   * BinaryOp if val is a binary operation
@@ -373,7 +379,7 @@ module Function
     def to_b
       if self.val.is_a? Pow then
         left =  "(-#{self.val.left.to_b})"
-        right = (self.val.right.is_a? Numeric) ? (self.val.right.to_b) : ("(#{self.val.right.to_b})")
+        right = (self.val.right.is_a? Number) ? (self.val.right.to_b) : ("(#{self.val.right.to_b})")
         return "#{left}**#{right}"
       elsif self.val.is_a? BinaryOp then
         return "-(#{self.val.to_b})"

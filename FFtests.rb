@@ -15,10 +15,10 @@ k = Function::Variable.new "k"
 n1 = Function::Number.new 3
 n2 = Function::Number.new 4
 
-puts (x + n1 + Function::Negative.new(n2)).reduce
+r = x + n1 + Function::Negative.new(n2)
 
+puts r
 
-r = x + y
 dr = r.diff(x)
 
 puts "d(#{r.to_s})/dx = #{dr.to_s}"

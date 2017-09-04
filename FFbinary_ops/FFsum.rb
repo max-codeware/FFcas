@@ -29,7 +29,6 @@ module Function
     #   * Variable 
     #   * +nil+ if the operation can't be performed 
     def +(obj)
-      obj.top = false
       if obj.is_a? Sum then
         op = self + obj.left + obj.right
         return op
@@ -42,13 +41,11 @@ module Function
       end
       lft = self.left + obj
       if !(lft == nil) then
-        self.left = lft
-        return self
+        return Sum.new(lft,self.right).reduce
       else
         rht = self.right + obj
         if !(rht == nil) then
-          self.right = rht
-          return self
+          Sum.new(self.left,rht).reduce
         else
           return nil unless self.top
           return Sum.new(self,obj)
@@ -69,7 +66,6 @@ module Function
     #   * Variable 
     #   * +nil+ if the operation can't be performed
     def -(obj)
-      obj.top = false
       unless obj.is_a? BinaryOp
         if (obj.is_a? Sum) || (obj.is_a? Diff)
           obj = obj.invert
@@ -81,16 +77,14 @@ module Function
       end
       lft = self.left - obj
       if !(lft == nil) then
-        self.left = lft
-        return self
+        return Sum.new(lft,self.right).reduce
       else
         rht = self.right - obj
         if !(rht == nil) then
-          self.right = rht
-          return self
+          return Sum.new(self.left,rht).reduce
         else
           return nil unless self.top
-          return Diff.new(self,obj)
+          return Diff.new(self,obj).reduce
         end
       end
     end
@@ -137,7 +131,7 @@ module Function
       return Pow.new(self,obj)
     end
     
-    # Calls reduce of BinaryOp and then semplifies the sum according to the cases:
+    # Calls reduce of BinaryOp and then simplifies the sum according to the cases:
     # * 0 + y    => x
     # * x + 0    => y
     # * x + x    => 2*x

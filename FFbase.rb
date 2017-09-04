@@ -214,6 +214,7 @@ module Function
     # * **returns**:
     #   * BinaryOp if val is a binary operation
     #   * 0 if val is 0
+    #   * -∞ if val is ∞
     #   * Negative if there's nothing to change
     def reduce
       @val = self.val.reduce
@@ -222,7 +223,9 @@ module Function
       elsif self.val == 0
         return Number.new 0
       elsif self.val.is_a? Negative
-        return self.val.val.reduce
+        return self.val.val #.reduce
+      elsif self.val.is_a? P_Infinity_Val
+        return M_Infinity
       else
         val = @val
         @val = @val.reduce

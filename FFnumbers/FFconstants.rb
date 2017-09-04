@@ -10,6 +10,10 @@ module Function
     def initialize
       self.top = false
     end
+    
+    def val
+      return @val
+    end
   
     def top=(val)
       @top = val
@@ -52,6 +56,10 @@ module Function
       # return obj / self if obj.is_a? BinaryOp
       return Pow.new(self,obj).reduce unless self.class == obj.class
       return Pow.new(self,2)
+    end
+    
+    def reduce
+      return self
     end
     
     def ==(obj)
@@ -98,7 +106,7 @@ module Function
     
   end
   
-  class PI > Constant
+  class PI < Constant
   
     def initialize
       super
@@ -117,6 +125,46 @@ module Function
   
   class P_Infinity_Val < Constant
   
+    def initialize
+      super
+      @val = 1/0.0
+    end
+    
+    def +(obj)
+      raise "Math Error: #{self.to_s}#{obj.to_s}" if obj.is_a? M_Infinity_Val
+      return self - obj.val if obj.is_a? Negative
+      return self
+    end
+    
+    def -(obj)
+      raise "Math Error: #{self.to_s}#{self.to_s}" if obj.is_a? P_Infinity_Val
+      unless obj.is_a? Negative
+        return self + M_Infinity if obj.val.is_a? P_Infinity_val
+        return self + obj.val
+      return self 
+    end
+    
+    def *(obj)
+      return Negative.new(self * obj.val).reduce if obj.is_a? Negative
+      return self 
+    end
+    
+    def /(obj)
+      raise "Math Error: ∞/∞" if obj.is_a? P_Infinity_Val
+      return Negative.new(self / obj.val).reduce if obj.is_a? Negative
+      return self 
+    end
+    
+    def **(obj)
+      raise "Math Error: ∞^0"
+      return Number.new 0 if obj.is_a? Negative
+      return self
+    end
+    
+    def invert
+      return M_Infinity
+    end
+  
     def to_s
       return "∞"
     end
@@ -129,7 +177,29 @@ module Function
   
   P_Infinity = P.Infinity_Val.new
   
-  class M_Infinity_Val
+  class M_Infinity_Val < P_Infinity_Val
+  
+    def initialize
+      self.top = true
+      @val = -1/0.0
+    end
+    
+    def +(obj)
+      return obj - P_Infinity
+    end
+    
+    def -(obj)
+      raise "Math Error: -∞+∞" if obj.is_a? M_infinity_Val
+      return M_Infinity
+    end
+    
+    def *
+      
+    end
+    
+    def invert
+      return P_Infinity
+    end
   
     def to_s
       return "-∞"
@@ -141,6 +211,6 @@ module Function
        
   end
   
-  M_Infinity = Negative.new P_Infinity
+  M_Infinity = M_Infinity_Val
 
 end

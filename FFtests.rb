@@ -14,12 +14,18 @@ k = Function::Variable.new "k"
 
 n1 = Function::Number.new 3
 n2 = Function::Number.new 4
+ze = Function::Number.new 0
 
+pi = Function::PI
+e  = Function::E
 
+inf  = Function::P_Infinity
+minf = Function::M_Infinity
 
-r = x + n1 - n2 + k + Function::Negative.new(y)
-puts r
+puts inf.invert
+#r = x + n1 - n2 + k + Function::Negative.new(y)
+#puts r
 
-dr = r.diff(y)
+#dr = r.diff(y)
 
-puts "d(#{r.to_s})/dx = #{dr.to_s}"
+#puts "d(#{r.to_s})/dx = #{dr.to_s}"

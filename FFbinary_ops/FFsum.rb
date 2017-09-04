@@ -28,11 +28,15 @@ module Function
     #   * Variable
     #   * Math_Funct
     #   * Numeric
-    # * **returns**:
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: one of these
     #   * Negative
     #   * BinaryOp and children
     #   * Numeric  
     #   * Variable 
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
     #   * +nil+ if the operation can't be performed 
     def +(obj)
       if obj.is_a? Sum then
@@ -63,11 +67,15 @@ module Function
     #   * Variable
     #   * Math_Funct
     #   * Numeric
-    # * **returns**:
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: one of these
     #   * Negative
     #   * BinaryOp and children
     #   * Numeric  
-    #   * Variable 
+    #   * Variable
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val 
     #   * +nil+ if the operation can't be performed
     def -(obj)
       unless !(obj.is_a? BinaryOp)
@@ -99,6 +107,8 @@ module Function
     #   * Variable
     #   * Math_Funct
     #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
     # * **returns**:
     #   * Prod
     #   * +nil+ if the operation can't be performed
@@ -113,6 +123,8 @@ module Function
     #   * Variable
     #   * Math_Funct
     #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
     # * **returns**:
     #   * Div
     #   * +nil+ if the operation can't be performed
@@ -127,6 +139,8 @@ module Function
     #   * Variable
     #   * Math_Funct
     #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
     # * **returns**:
     #   * Pow
     #   * +nil+ if the operation can't be performed
@@ -141,15 +155,28 @@ module Function
     # * x + x    => 2*x
     # * x + (-y) => x - y
     # * x + y    => x + y
+    # * ∞ - ∞    => raises an error
+    # * -∞ + ∞   => raises an error
+    # * ∞ + ∞    => ∞
+    # * -∞ + (-∞)=> -∞
     #
-    # * **returns**:
+    # * **returns**: one of these
     #   * Variable
     #   * BinaryOp and children
     #   * Negative
     #   * Number
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
     def reduce
       self.red
-      if self.left == 0
+      if (self.left == P_Infinity) && (self.right == P_Infinity)
+        return P_Infinity
+      elsif (self.left == M_Infinity) && (self.right == M_Infinity)
+        return M_Infinity
+      elsif ((self.left == P_Infinity) && (self.right == M_Infinity)) || 
+            ((self.left == M_Infinity) && (self.right == P_Infinity))
+        raise "Math Error: ∞-∞"
+      elsif self.left == 0
         return self.right
       elsif self.right == 0
         return self.left

@@ -8,7 +8,7 @@ module Function
   class Constant
     
     def initialize
-      self.top = false
+      self.top = true
     end
     
     def val
@@ -25,6 +25,8 @@ module Function
     
     def +(obj)
       return nil unless self.top or (self.class == obj.class)
+      return P_Infinity if obj == P_Infinity
+      return M_Infinity if obj == M_Infinity
       return obj + self if obj.is_a? BinaryOp
       return Sum.new(self,obj).reduce unless self.class == obj.class
       return Prod.new(2,self)
@@ -32,6 +34,8 @@ module Function
     
     def -(obj)
       return nil unless self.top or (self.class == obj.class)
+      return P_Infinity if obj == M_Infinity
+      return M_Infinity if obj == P_Infinity
       return obj - self if obj.is_a? BinaryOp
       return Diff.new(self,obj).reduce unless self.class == obj.class
       return Number.new 0
@@ -40,13 +44,16 @@ module Function
     def *(obj)
       return nil unless self.top or (self.class == obj.class)
       # return obj * self if obj.is_a? BinaryOp
+      return P_Infinity if obj == P_Infinity
+      return M_Infinity if obj == M_Infinity
       return Prod.new(self,obj).reduce unless self.class == obj.class
-      return Pow.new(self,2)
+      return Pow.new(self,Number.new(2))
     end
     
     def /(obj)
       return nil unless self.top or (self.class == obj.class)
       # return obj / self if obj.is_a? BinaryOp
+      return Number.new 0 if (obj == P_Infinity) || (obj == M_Infinity)
       return Div.new(self,obj).reduce unless self.class == obj.class
       return Number.new 1
     end
@@ -54,8 +61,11 @@ module Function
     def **(obj)
       return nil unless self.top or (self.class == obj.class)
       # return obj / self if obj.is_a? BinaryOp
+      return P_Infinity if obj == P_Infinity
+      return Number.new 0 if obj == M_Infinity
+      return Number.new 1 if obj == 0
       return Pow.new(self,obj).reduce unless self.class == obj.class
-      return Pow.new(self,2)
+      return Pow.new(self,Number.new(2))
     end
     
     def reduce
@@ -63,7 +73,7 @@ module Function
     end
     
     def ==(obj)
-      return false unless self.class = obj.class
+      return self.class == obj.class
     end
     
     def diff(var)
@@ -76,7 +86,7 @@ module Function
     
   end
   
-  class E < Constant
+  class Const_E < Constant
   
     alias :prod  :*
     alias :power :**
@@ -87,8 +97,8 @@ module Function
     end
     
     def *(obj)
-      return self.prod unless self.class == obj.class
-      return Exp.new(2)
+      return self.prod obj unless self.class == obj.class
+      return Exp.new(Number.new(2))
     end
     
     def **(obj)
@@ -106,13 +116,15 @@ module Function
     
   end
   
-  class PI < Constant
+  E = Const_E.new
+  
+  class Const_PI < Constant
   
     def initialize
       super
       @val = Math::PI
     end
-  
+    
     def to_s
       return "π"
     end
@@ -123,6 +135,8 @@ module Function
   
   end
   
+  PI = Const_PI.new
+  
   class P_Infinity_Val < Constant
   
     def initialize
@@ -131,17 +145,18 @@ module Function
     end
     
     def +(obj)
-      raise "Math Error: #{self.to_s}#{obj.to_s}" if obj.is_a? M_Infinity_Val
+      raise "Math Error: #{self.to_s}#{obj.to_s}" if obj == M_Infinity
       return self - obj.val if obj.is_a? Negative
       return self
     end
     
     def -(obj)
-      raise "Math Error: #{self.to_s}#{self.to_s}" if obj.is_a? P_Infinity_Val
+      raise "Math Error: #{self.to_s}#{self.to_s}" if obj == P_Infinity
       unless obj.is_a? Negative
-        return self + M_Infinity if obj.val.is_a? P_Infinity_val
+        return self + M_Infinity if obj == P_Infinity
         return self + obj.val
-      return self 
+      end
+      return P_Infinity 
     end
     
     def *(obj)
@@ -150,15 +165,15 @@ module Function
     end
     
     def /(obj)
-      raise "Math Error: ∞/∞" if obj.is_a? P_Infinity_Val
+      raise "Math Error: ∞/∞" if (obj == P_Infinity) || (obj == M_Infinity)
       return Negative.new(self / obj.val).reduce if obj.is_a? Negative
-      return self 
+      return P_Infinity
     end
     
     def **(obj)
-      raise "Math Error: ∞^0"
-      return Number.new 0 if obj.is_a? Negative
-      return self
+      raise "Math Error: ∞^0" if obj == 0
+      return Number.new 0 if (obj.is_a? Negative) || (obj == M_Infinity)
+      return P_Infinity
     end
     
     def invert
@@ -175,12 +190,12 @@ module Function
     
   end
   
-  P_Infinity = P.Infinity_Val.new
+  P_Infinity = P_Infinity_Val.new
   
-  class M_Infinity_Val < P_Infinity_Val
+  class M_Infinity_Val < Constant
   
     def initialize
-      self.top = true
+      super
       @val = -1/0.0
     end
     
@@ -189,12 +204,28 @@ module Function
     end
     
     def -(obj)
-      raise "Math Error: -∞+∞" if obj.is_a? M_infinity_Val
+      raise "Math Error: -∞+∞" if obj == M_infinity
       return M_Infinity
     end
     
-    def *
-      
+    def *(obj)
+      raise "Math Error: ∞*0" if obj == 0
+      return P_Infinity if obj == M_Infinity
+      return M_Infinity
+    end
+    
+    def /(obj)
+      raise "Math Error: ∞/∞" if (obj == P_Infinity) || (obj == M_Infinity)
+      return P_infinity if obj.is_a? Negative
+      return M_infinity
+    end
+    
+    def **(obj)
+      raise "Math Error: ∞^0" if obj == 0
+      return Number.new if obj.is_a? Negative   
+      return P_Infinity if (obj.is_a? Number and obj.val.even?) || (obj == P_Infinity)
+      return Number.new 0 if obj == M_Infinity
+      return M_Infinity
     end
     
     def invert
@@ -211,6 +242,6 @@ module Function
        
   end
   
-  M_Infinity = M_Infinity_Val
+  M_Infinity = M_Infinity_Val.new
 
 end

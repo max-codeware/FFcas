@@ -25,7 +25,10 @@ module Function
     end
     
     def +(obj)
-      return nil unless (self.top) || (obj.is_a? Number) || (obj.is_a? Negative and obj.val.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj.is_a? Negative and obj.val.is_a? Number) || 
+                                                            (obj == P_Infinity) || (obj == M_Infinity)
+      return P_Infinity if obj == P_Infinity
+      return M_Infinity if obj == M_Infinity
       return Number.new(self.val + obj.val) if obj.is_a? Number
       return self - obj.val if obj.is_a? Negative
       return obj + self  if obj.is_a? BinaryOp
@@ -33,7 +36,9 @@ module Function
     end
     
     def -(obj)
-      return nil unless (self.top) || (obj.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
+      return P_Infinity if obj == M_Infinity
+      return M_Infinity if obj == P_Infinity
       if obj.is_a? Number
         if self.val > obj.val
           return Number.new(self.val - obj.val) 
@@ -50,21 +55,33 @@ module Function
     end
     
     def *(obj)
-      return nil unless (self.top) || (obj.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
+      raise "Math Error 0*∞" if (self == 0) && ((obj == P_Infinity) || (obj == M_Inifinity))
+      if obj == P_Infinity
+        return (self.val > 0) ? P_Infinity : M_Infinity
+      end
+      if obj == M_Infinity
+        return (self.val > 0) ? M_Infinity : P_Infinity
+      end
       return Number.new(self.val * obj.val) if obj.is_a? Number
-      return obj * self if obj.is_a? BinaruOp
+      return obj * self if obj.is_a? BinaryOp
       return Negative.new(self * obj.val) if obj.is_a? Negative
       return Prod.new(obj,self) 
     end
     
     def /(obj)
-      return nil unless (self.top) || (obj.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
+      return Number.new 0 if (obj == P_Infinity) || (obj == M_Infinity)
       return Negative.new(Div.new(self,obj.val)) if obj.is_a? Negative
       return Div.new(self,obj)
     end
     
     def **(obj)
-      return nil unless (self.top) || (obj.is_a? Number)
+      return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
+      raise "Math Error: 0^∞" if (self == 0) && ((obj == P_Infinity) || (obj == M_Infinity))
+      raise "Math Error: 0^0" if (self == 0) && (obj == 0)
+      return P_Infinity if obj == P_Infinity
+      return Number.new 0 if obj == M_Infinity
       return Number.new(self.val ** obj.val) if obj.is_a? Number
       return Pow.new(self,obj)
     end

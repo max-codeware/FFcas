@@ -69,7 +69,7 @@ module Function
       unless obj.is_a? BinaryOp
         if (obj.is_a? Sum) || (obj.is_a? Diff)
           obj = obj.invert
-          return self + obj
+          return (self + obj).reduce
         else
           return nil unless self.top
           return Diff.new(self,obj)

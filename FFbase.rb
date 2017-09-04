@@ -185,6 +185,7 @@ module Function
     #   * Costant
     #   * BinaryOp and children
     def initialize(val)
+      val = val.clone
       val.top = false
       @val = val
       self.top = true
@@ -408,8 +409,8 @@ module Function
     # * **returns**: result of the differential
     def diff(var)
       if self.depend? var
-        diff = Negative.new(self.arg.diff(var).reduce) 
-        diff.top = false
+        diff = Negative.new(self.arg.diff(var)).reduce 
+        # diff.top = false
         return diff
       else
         return Number.new 0

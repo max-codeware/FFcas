@@ -65,7 +65,6 @@ module Function
     end  
     
     # Simplifies the left and right side
-    #
     def reduce
       temp = self.left.clone
       self.left = self.left.reduce
@@ -75,15 +74,20 @@ module Function
       end
       temp = self.right.clone
       self.right = self.right.reduce
-      while temp != self.left do
-        temp = self.left.clone
-        self.left = self.left.reduce
+      while temp != self.right do
+        temp = self.right.clone
+        self.right = self.right.reduce
       end
-      
-      def ==(obj)
-        return false unless self.class == obj.class
-        return (self.left == obj.left) && (self.right == obj.right)
-      end
+    end
+    
+    # Verifies if two binary ops are equal, that is both belong to
+    # the same class and they have equal arguments (left and right side)
+    #
+    # * **argument**: object for the comparison
+    # * **returns**: +true+ if the values are equal; +false+ else
+    def ==(obj)
+      return false unless self.class == obj.class
+      return (self.left == obj.left) && (self.right == obj.right)
     end
     
     # Tells if this binary op depends on a specific variable
@@ -353,7 +357,7 @@ module Function
       if not self.top then
         return nil unless self.depend? obj      
       end
-      if obj.is_a? Numeric then
+      if obj.is_a? Number then
         return (self.val ** obj).reduce if obj.even
         return Negative.new(self.val ** obj)
       else
@@ -366,7 +370,7 @@ module Function
     def to_s
       if self.val.is_a? Pow then
         left =  "(-#{self.val.left.to_s})"
-        right = (self.val.right.is_a? Numeric) ? (self.val.right.to_s) : ("(#{self.val.right.to_s})")
+        right = (self.val.right.is_a? Number) ? (self.val.right.to_s) : ("(#{self.val.right.to_s})")
         return "#{left}^#{right}"
       elsif self.val.is_a? BinaryOp then
         return "-(#{self.val.to_s})"

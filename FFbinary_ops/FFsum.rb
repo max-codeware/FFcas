@@ -7,6 +7,12 @@
 # License:: Distributed under MIT license
 module Function
 
+  ##
+  # This class represents a sum between two algebric elements
+  #
+  #
+  # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
+  # License:: Distributed under MIT license
   class Sum < BinaryOp
   
     alias :red :reduce 
@@ -30,14 +36,12 @@ module Function
     #   * +nil+ if the operation can't be performed 
     def +(obj)
       if obj.is_a? Sum then
-        op = self + obj.left + obj.right
-        return op
+        return self + obj.left + obj.right
       elsif obj.is_a? Diff
-        op = self + obj.left - obj.right
-        return op
-      elsif obj.is_a? BinaryOp 
-        return nil unless self.top
-        return Sum.new(self,obj).reduce   
+        return self + obj.left - obj.right
+      # elsif obj.is_a? BinaryOp 
+      #  return nil unless self.top
+      #  return Sum.new(self,obj).reduce   
       end
       lft = self.left + obj
       if !(lft == nil) then
@@ -48,7 +52,7 @@ module Function
           Sum.new(self.left,rht).reduce
         else
           return nil unless self.top
-          return Sum.new(self,obj)
+          return Sum.new(self,obj).reduce
         end
       end
     end
@@ -66,13 +70,13 @@ module Function
     #   * Variable 
     #   * +nil+ if the operation can't be performed
     def -(obj)
-      unless obj.is_a? BinaryOp
+      unless !(obj.is_a? BinaryOp)
         if (obj.is_a? Sum) || (obj.is_a? Diff)
           obj = obj.invert
           return (self + obj).reduce
-        else
-          return nil unless self.top
-          return Diff.new(self,obj)
+        # else
+        #  return nil unless self.top
+        #  return Diff.new(self,obj)
         end
       end
       lft = self.left - obj
@@ -100,7 +104,7 @@ module Function
     #   * +nil+ if the operation can't be performed
     def *(obj)
       return nil unless self.top
-      return Prod.new(self,obj)
+      return Prod.new(self,obj).reduce
     end
     
     # * **argument**:
@@ -114,7 +118,7 @@ module Function
     #   * +nil+ if the operation can't be performed
     def /(obj)
       return nil unless self.top
-      return Div.new(self,obj)
+      return Div.new(self,obj).reduce
     end
       
     # * **argument**:
@@ -128,12 +132,12 @@ module Function
     #   * +nil+ if the operation can't be performed
     def **(obj)
       return nil unless self.top
-      return Pow.new(self,obj)
+      return Pow.new(self,obj).reduce
     end
     
     # Calls reduce of BinaryOp and then simplifies the sum according to the cases:
-    # * 0 + y    => x
-    # * x + 0    => y
+    # * 0 + y    => y
+    # * x + 0    => x
     # * x + x    => 2*x
     # * x + (-y) => x - y
     # * x + y    => x + y
@@ -142,7 +146,7 @@ module Function
     #   * Variable
     #   * BinaryOp and children
     #   * Negative
-    #   * Numeric
+    #   * Number
     def reduce
       self.red
       if self.left == 0
@@ -159,11 +163,11 @@ module Function
     end
     
     # Inverts all the signs
+    # (x + y).invert = -x - y
     #
     # * **returns**: Diff
     def invert
-      lft = self.left.invert
-      return Diff.new(lft,self.right).reduce
+      return Diff.new(self.left.invert,self.right).reduce
     end
     
     # Calculates the differential

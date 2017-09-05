@@ -5,7 +5,7 @@
 # License:: Distributed under MIT license
 module Function
 
-  class Constant
+  class Constant < Base
     
     def initialize
       self.top = true
@@ -13,14 +13,6 @@ module Function
     
     def val
       return @val
-    end
-  
-    def top=(val)
-      @top = val
-    end
-    
-    def top
-      return @top
     end
     
     def +(obj)

@@ -167,6 +167,8 @@ module Function
       elsif ((self.left == P_Infinity) && (self.right == P_Infinity)) || 
             ((self.left == M_Infinity) && (self.right == M_Infinity))
         raise "Math Error: ∞-∞"
+      elsif self.right == M_Infinity
+        return Sum.new(self.left,P_Infinity).reduce
       elsif self.left == 0
         return Negative.new(self.right).reduce
       elsif self.right == 0

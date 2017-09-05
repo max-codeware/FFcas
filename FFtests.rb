@@ -12,9 +12,9 @@ x = Function::Variable.new "x"
 y = Function::Variable.new "y"
 k = Function::Variable.new "k"
 
-n1 = Function::Number.new 3
-n2 = Function::Number.new 4
-ze = Function::Number.new 0
+n3 = Function::Number.new 3
+n4 = Function::Number.new 4
+n0 = Function::Number.new 0
 
 pi = Function::PI
 e  = Function::E
@@ -22,7 +22,7 @@ e  = Function::E
 inf  = Function::P_Infinity
 minf = Function::M_Infinity
 
-puts inf.invert
+puts x + n3 - inf
 #r = x + n1 - n2 + k + Function::Negative.new(y)
 #puts r
 

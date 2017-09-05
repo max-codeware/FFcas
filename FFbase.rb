@@ -139,7 +139,30 @@ module Function
       return arg
     end
     
-    # Checks if obj equals tho the Function
+    def +(obj)
+      return nil unless self.top or self == obj
+      return Prod.new(Number.new(2)) if self == obj
+      return Sum.new(self,obj)
+    end
+    
+    def -(obj)
+      return nil unless self.top or self == obj
+      return Number.new 0 if self == obj
+      return Diff.new(self,obj)
+    end
+    
+    def *(obj)
+      return nil unless self.top or self == obj
+      return Pow.new(self,Number.new(2)) if self == obj
+      return Prod.new(self,obj)
+    end
+    
+    def **(obj)
+      return nil unless self.top or self == obj
+      return Pow.new(self,obj)
+    end
+    
+    # Checks if obj equals to the Function
     #
     # * **argument**: object for the comparison
     # * **returns**: +true+ if obj is the same funtion and has the same arguments;
@@ -153,6 +176,15 @@ module Function
     #
     def reduce
       self.arg = self.arg.reduce
+    end
+    
+    # Inverts the sign of the function
+    #
+    # * **returns**: new Negative
+    def invert
+      inv = Negative.new(self)
+      inv.top = self.top
+      return inv
     end
     
     # Tells if the current function depends on a specific variable

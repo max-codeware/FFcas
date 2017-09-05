@@ -7,6 +7,10 @@ module Function
 
   ##
   # This class is the base for all the elements of Function
+  #
+  #
+  # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
+  # License:: Distributed under MIT license
   class Base
     
     # Sets the position of the binary op: if top is true means that 

@@ -154,7 +154,9 @@ module Function
     #
     # * **returns**: Negative of self
     def invert
-      return Negative.new self
+      inv = Negative.new self
+      inv.top = self.top
+      return inv
     end
     
   end
@@ -317,7 +319,9 @@ module Function
     #
     # * **returns**: M_Infinity
     def invert
-      return M_Infinity
+      inv = M_Infinity
+      inv.top = self.top
+      return inv
     end
   
     # * **returns**: string representation of infinity
@@ -352,7 +356,9 @@ module Function
     #
     # * **returns**: M_Infinity; Raises an error if ∞-∞
     def +(obj)
-      return obj.invert - P_Infinity
+      raise "Math Error: ∞-∞" if obj == P_Infinity
+      return Sum.new(self,obj).reduce if (obj.is_a? Math_Funct) || (obj.is_a? Variable) 
+      return M_Infinity 
     end
     
     # Overload of Constant method 
@@ -401,7 +407,9 @@ module Function
     #
     # * **returns**: P_Infinity
     def invert
-      return P_Infinity
+      inv = P_Infinity
+      inv.top = self.top
+      return inv
     end
   
     # * **returns**: string representation of minus infinity

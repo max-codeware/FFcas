@@ -248,7 +248,9 @@ module Function
     #
     # * **returns**: self.arg
     def invert
-      return self.arg
+      inv = self.arg
+      inv.top = self.top
+      return inv
     end
     
     # Verifies if two negatives have the same value

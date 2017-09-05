@@ -196,7 +196,9 @@ module Function
     #
     # * **returns**: Diff
     def invert
-      return Diff.new(self.left.invert,self.right).reduce
+      inv = Diff.new(self.left.invert,self.right).reduce
+      inv.top = self.top
+      return inv
     end
     
     # Calculates the differential

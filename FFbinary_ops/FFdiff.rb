@@ -38,15 +38,16 @@ module Function
     #   * +nil+ if the operation can't be performed 
     def +(obj)
       if obj.is_a? Sum then
-        return elf + obj.left + self + obj.right
+        return self + obj.left + obj.right
       elsif obj.is_a? Diff then
-        obj = obj.invert
-        return self + obj
+        # obj = obj.invert
+        return self + obj.left - obj.right
       end
       lft = self.left + obj
       if !(lft == nil) then
         return Diff.new(lft,self.right).reduce
       else
+        #puts self.right.top
         rht = self.right.invert + obj
         if !(rht == nil)
           return Diff.new(self.left,rht).reduce
@@ -187,7 +188,9 @@ module Function
     #
     # * **returns**: Sum
     def invert
-      return Sum.new(self.left.invert,self.right).reduce
+      inv = Sum.new(self.left.invert,self.right).reduce
+      inv.top = self.top
+      return inv
     end
     
     # Calculates the differential

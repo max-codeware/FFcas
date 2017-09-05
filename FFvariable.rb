@@ -11,7 +11,7 @@ module Function
   # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
   # License:: Distributed under MIT license
   class Variable < String
-
+ 
     def initialize(name)
       super
       self.top = true
@@ -35,8 +35,7 @@ module Function
     # * **argument**: object to check for dependencies
     # * **returns**: +true+ if Negative depends on obj; +false+ else
     def depend?(obj)
-      return false unless (obj.is_a? Variable) or (obj.is_a? Negative)
-      return self == obj.val if obj.is_a? Negative
+      return false unless obj.is_a? Variable
       return self == obj
     end
   
@@ -170,7 +169,9 @@ module Function
     #
     # * **returns**: new Negative
     def invert
-      return Negative.new(self)
+      inv = Negative.new(self)
+      inv.top = self.top
+      return inv
     end
     
     # * **returns**: self

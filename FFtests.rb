@@ -22,7 +22,7 @@ e  = Function::E
 inf  = Function::P_Infinity
 minf = Function::M_Infinity
 
-puts x + n3 - inf
+puts (n3 - x) - (n4 + inf)
 #r = x + n1 - n2 + k + Function::Negative.new(y)
 #puts r
 

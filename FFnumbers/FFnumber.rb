@@ -43,7 +43,7 @@ module Function
         if self.val > obj.val
           return Number.new(self.val - obj.val) 
         else
-          return Negative.new(obj - self) 
+          return Negative.new(Number.new((self.val - obj.val).abs)) 
         end
       end
       if obj.is_a? BinaryOp
@@ -51,7 +51,7 @@ module Function
         return self + obj
       end
       return Number.new(self.val + obj.val) if obj.is_a? Negative
-      return Diff.new(obj.invert,self)       
+      return Diff.new(self,obj)       
     end
     
     def *(obj)
@@ -87,6 +87,8 @@ module Function
     end
     
     def invert
+      inv = Negative.new self
+      inv.top = self.top
       return Negative.new self
     end
     

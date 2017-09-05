@@ -320,7 +320,7 @@ module Function
      # Third Splitting of the method :*
      #
      # * **argument**: see :*
-     # * **returns**: new Prod; +nil+ if there's nothing to do
+     # * **returns**: new Prod; +nil+ if there's nothing to do 
      def third_chk(obj)
        if obj.is_a? Prod
          res = self * obj.left

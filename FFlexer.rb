@@ -25,6 +25,8 @@ module Function
                  :LOG      => /^[Ll][Oo][Gg]/,
                  :EXP      => /^[Ee][Xx][Pp]/, 
                  :SQRT     => /^[Ss][Qq][Rr][Tt]/,
+                 :INF      => /^[I][N][F]/,
+                 :N_INF    => /^[N][_][I][N][F]/,
                  :VARIABLE => /^[a-zA-Z_][a-zA-Z0-9_]*/, 
                  :INTEGER  => /^[1-9][0-9]*/,
                  :FLOAT    => /^[0-9]*[.][0-9]*/,

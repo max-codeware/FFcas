@@ -22,10 +22,10 @@ e  = Function::E
 inf  = Function::P_Infinity
 minf = Function::M_Infinity
 
-puts (n3 - x) - (n4 + inf)
-#r = x + n1 - n2 + k + Function::Negative.new(y)
-#puts r
+#puts n3 * y * n4 * n3 *x * minf
+r = x * n3 * y * k * inf
+puts r
 
-#dr = r.diff(y)
+dr = r.diff(k)
 
-#puts "d(#{r.to_s})/dx = #{dr.to_s}"
+puts "d(#{r.to_s})/dk = #{dr.to_s}"

@@ -159,6 +159,14 @@ module Function
       return inv
     end
     
+    # It's a dummy method for a constant since it does not depend
+    # on a variable, so it returns always +false+
+    #
+    # * **returns**: +false+
+    def depend?(var)
+      return false
+    end
+    
   end
   
   ##

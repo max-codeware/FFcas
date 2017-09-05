@@ -5,7 +5,7 @@
 # License:: Distributed under MIT license
 module Function
   
-  class Number
+  class Number < Base
     
     def initialize(val)
       @val = val
@@ -16,17 +16,10 @@ module Function
       return @val
     end
     
-    def top=(val)
-      @top = val
-    end
-    
-    def top
-      return @top
-    end
-    
     def +(obj)
       return nil unless (self.top) || (obj.is_a? Number) || (obj.is_a? Negative and obj.val.is_a? Number) || 
                                                             (obj == P_Infinity) || (obj == M_Infinity)
+      return obj if self == 0
       return P_Infinity if obj == P_Infinity
       return M_Infinity if obj == M_Infinity
       return Number.new(self.val + obj.val) if obj.is_a? Number
@@ -37,6 +30,7 @@ module Function
     
     def -(obj)
       return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
+      return obj.invert if self == 0
       return P_Infinity if obj == M_Infinity
       return M_Infinity if obj == P_Infinity
       if obj.is_a? Number
@@ -56,7 +50,8 @@ module Function
     
     def *(obj)
       return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
-      raise "Math Error 0*∞" if (self == 0) && ((obj == P_Infinity) || (obj == M_Inifinity))
+      raise "Math Error 0*∞" if (self == 0) && ((obj == P_Infinity) || (obj == M_Infinity))
+      return obj if self == 1
       if obj == P_Infinity
         return (self.val > 0) ? P_Infinity : M_Infinity
       end
@@ -66,7 +61,7 @@ module Function
       return Number.new(self.val * obj.val) if obj.is_a? Number
       return obj * self if obj.is_a? BinaryOp
       return Negative.new(self * obj.val) if obj.is_a? Negative
-      return Prod.new(obj,self) 
+      return Prod.new(self,obj) 
     end
     
     def /(obj)
@@ -93,7 +88,8 @@ module Function
     end
     
     def reduce
-      return self
+      return self unless self.val < 0
+      return Negative.new(self.val.abs)
     end
     
     def diff(var)
@@ -116,6 +112,10 @@ module Function
     
     def to_b
       return val
+    end
+    
+    def =~(obj)
+      return self == obj
     end
     
   end

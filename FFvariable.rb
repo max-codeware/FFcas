@@ -114,7 +114,8 @@ module Function
       elsif self == obj
         return Pow.new(self,Number.new(2))
       else
-        return Prod.new(self,obj)
+        return Prod.new(self,obj) unless obj.is_a? Number
+        return Prod.new(obj,self)
       end
     end
     
@@ -172,6 +173,17 @@ module Function
       inv = Negative.new(self)
       inv.top = self.top
       return inv
+    end
+    
+    # Tells if the variable is similar to another object (eg. x =~ x^2)
+    #
+    # * **argument**: object for the comparison
+    # * **returns**: +true+ if obj == self or obj is a power of self; +false+ else.
+    def =~(obj)
+      if obj.is_a? Pow
+        return true if self == obj.left
+      end
+      return self == obj
     end
     
     # * **returns**: self

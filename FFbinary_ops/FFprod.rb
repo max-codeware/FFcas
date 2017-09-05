@@ -4,15 +4,34 @@
 # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
 # License:: Distributed under MIT license
 module Function
-
+  
+  ##
+  # This class represents an abstract product between two algebric elements
+  #
+  #
+  # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
+  # License:: Distributed under MIT license
   class Prod < BinaryOp
     
     alias :red :reduce
     
+    # See BinaryOp
     def initialize(l,r)
       super
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: 
+    #   * Children of Constant
+    #   * Children of BinaryOp
+    #   * +nil+ if the operation can't be performed
     def +(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj)
       return Prod.new(Number.new(2),self) if self == obj
@@ -21,6 +40,18 @@ module Function
       return Sum.new(self,obj).reduce
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: 
+    #   * Children of Constant
+    #   * Children of BinaryOp
+    #   * +nil+ if the operation can't be performed
     def -(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj)
       return Number.new 0 if self == obj
@@ -29,6 +60,21 @@ module Function
       return Diff.new(self,obj)
     end
     
+    # This method has been splitted into other tree ones due to the code lenght;
+    # See :first_chk, :second_chk, :third_chk
+    #
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: 
+    #   * Children of Constant
+    #   * Children of BinaryOp
+    #   * +nil+ if the operation can't be performed
     def *(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj) || 
                                                              (obj == 0) || 
@@ -44,9 +90,24 @@ module Function
       chk = third_chk(obj)
       return chk unless chk == nil
       return Prod.new(self,obj) unless obj.is_a? Number
-      return Prod.new(obj,self)
+      return Prod.new(obj,self).reduce
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: one of these
+    #   * Number
+    #   * Variable
+    #   * Children of Math_Funct
+    #   * Children of Constant
+    #   * Children of BinaryOp
+    #   * +nil+ if the operation can't be performed
     def /(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj) || 
                                                             (obj == 0) || 
@@ -59,13 +120,28 @@ module Function
         return ret
       end 
       if (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
-        lft = self.left / obj
+        lft = self.left
+        lft.top = true
+        lft /= obj
+        puts lft
         return Prod.new(lft,self.right).reduce unless lft == nil
         return nil unless self.top
       end
       return Div.new(self,obj).reduce
     end
     
+    # * **argument**:
+    #   * Negative
+    #   * BinaryOp and children
+    #   * Variable
+    #   * Math_Funct
+    #   * Numeric
+    #   * P_Infinity_Val
+    #   * M_Infinity_Val
+    # * **returns**: one of these
+    #   * Children of Constant
+    #   * Children of BinaryOp
+    #   * +nil+ if the operation can't be performed
     def **(obj)
       return nil unless (self.top) || (self == obj) || (obj == 0) || (obj.is_a? Number) ||
                                                                         (obj == P_Infinity) ||
@@ -84,6 +160,7 @@ module Function
       return Pow.new(self,obj).reduce
     end
     
+    # Thells whether obj is similar so self. That is: 2*x =~ x (x is in common)
     def =~(obj)
       return false unless self.left.is_a? Number
       if obj.is_a? Prod
@@ -93,6 +170,22 @@ module Function
       return self.right == obj  
     end
     
+    # Simplifies the product:
+    # * 0 * ∞     => raises an error
+    # * ∞ * ∞     => ∞
+    # * -∞ * (-∞) => ∞
+    # * -∞ * ∞    => -∞
+    # * ∞ * (-∞)  => -∞
+    # * n * n     => n * n (n == Number)
+    # * q * q     => q ^ 2
+    # * 1 * y     => y
+    # * x * 1     => x
+    # * 0 * y     => y
+    # * x * 0     => 0
+    # * -x * y    => -(x * y)
+    # * x * (-y)  => -(x * y)
+    # * x * x^2   => x^3
+    # * x^2 * x   => x^3
     def reduce
       self.red
       if (self.left == 0) && ((self.right == P_Infinity) || (self.right == M_Infinity))
@@ -125,6 +218,9 @@ module Function
       return self
     end
     
+    # Inverts the sign of the class
+    #
+    # * **returns**: Negative or Prod
     def invert
       self.red
       if self.left.is_a? Negative
@@ -141,6 +237,11 @@ module Function
       return ret
     end
     
+    # Performs the differential of a product:
+    # dx*y + x*dy
+    #
+    # * **argument**: variable according to the differential must be done
+    # * **returns**: Children of BinaryOp or Function element
     def diff(var)
       return Number.new 0 unless self.depend? var
       lft, rht = self.left, self.right
@@ -153,12 +254,14 @@ module Function
       return Sum.new(d_lft,d_rht).reduce
     end
     
+    # * **returns**: string representation of the class
     def to_s
       lft = ((self.left.is_a? Sum) || (self.left.is_a? Diff)) ? ("(#{self.left.to_s})") : (self.left.to_s)
       rht = ((self.right.is_a? Sum) || (self.right.is_a? Diff)) ? ("(#{self.right.to_s})") : (self.right.to_s)
       return "#{lft}*#{rht}"
     end
     
+    # * **returns**: string representation of the class for a block
     def to_b
       lft = ((self.left.is_a? Sum) || (self.left.is_a? Diff)) ? ("(#{self.left.to_b})") : (self.left.to_b)
       rht = ((self.right.is_a? Sum) || (self.right.is_a? Diff)) ? ("(#{self.right.to_b})") : (self.right.to_b)
@@ -192,7 +295,7 @@ module Function
        return nil
      end 
      
-     # Second Splitting of the method :*
+     # Second splitting of the method :*
      #
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do

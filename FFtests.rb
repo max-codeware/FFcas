@@ -23,9 +23,9 @@ inf  = Function::P_Infinity
 minf = Function::M_Infinity
 
 #puts n3 * y * n4 * n3 *x * minf
-r = x * n3 * y * k * inf
+r = y * n3  / n4 #* y * k * inf
 puts r
 
-dr = r.diff(k)
+dr = r.diff(x)
 
 puts "d(#{r.to_s})/dk = #{dr.to_s}"

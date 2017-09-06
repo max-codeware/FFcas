@@ -254,15 +254,19 @@ module Function
     
     # * **returns**: string representation of the class
     def to_s
-      lft = ((self.left.is_a? Sum) || (self.left.is_a? Diff)) ? ("(#{self.left.to_s})") : (self.left.to_s)
-      rht = ((self.right.is_a? Sum) || (self.right.is_a? Diff)) ? ("(#{self.right.to_s})") : (self.right.to_s)
+      lft = self.left.to_s if self.left.is_a? Pow or !(self.left.is_a? BinaryOp)
+      lft = "(#{self.left.to_s})" unless self.left.is_a? Pow or !(self.left.is_a? BinaryOp)
+      rht = self.right.to_s if self.right.is_a? Pow or !(self.right.is_a? BinaryOp)
+      rht = "(#{self.right.to_s})" unless self.right.is_a? Pow or !(self.right.is_a? BinaryOp)
       return "#{lft}*#{rht}"
     end
     
     # * **returns**: string representation of the class for a block
     def to_b
-      lft = ((self.left.is_a? Sum) || (self.left.is_a? Diff)) ? ("(#{self.left.to_b})") : (self.left.to_b)
-      rht = ((self.right.is_a? Sum) || (self.right.is_a? Diff)) ? ("(#{self.right.to_b})") : (self.right.to_b)
+      lft = self.left.to_b if self.left.is_a? Pow or !(self.left.is_a? BinaryOp)
+      lft = "(#{self.left.to_b})" unless self.left.is_a? Pow or !(self.left.is_a? BinaryOp)
+      rht = self.right.to_b if self.right.is_a? Pow or !(self.right.is_a? BinaryOp)
+      rht = "(#{self.right.to_b})" unless self.right.is_a? Pow or !(self.right.is_a? BinaryOp)
       return "#{lft}*#{rht}"
     end
    

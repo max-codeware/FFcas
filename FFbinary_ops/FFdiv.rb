@@ -40,7 +40,7 @@ module Function
     end
     
     def -(obj)
-      return nil unless (slef.top) || (self =~ obj) || (self == obj)
+      return nil unless (self.top) || (self =~ obj) || (self == obj)
       return Number.new 0 if self == obj
       if self =~ obj
         if obj.is_a? Div
@@ -133,7 +133,7 @@ module Function
       d_lft = lft.diff(var) * rht
       d_rht = lft * rht.diff(var)
       rht **= Number.new(2)
-      return Div.new(d_lft + d_rht, rht).reduce
+      return Div.new(d_lft - d_rht, rht).reduce
     end
     
     def to_s

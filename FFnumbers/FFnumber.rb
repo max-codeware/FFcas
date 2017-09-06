@@ -114,9 +114,9 @@ module Function
       return val
     end
     
-    def =~(obj)
-      return self == obj
-    end
+    # def =~(obj)
+    #  return self == obj
+    # end
     
   end
 

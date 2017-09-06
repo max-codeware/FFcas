@@ -22,8 +22,11 @@ e  = Function::E
 inf  = Function::P_Infinity
 minf = Function::M_Infinity
 
+sin = Function::Sin.new(x)
+
 #puts n3 * y * n4 * n3 *x * minf
-r = y * n3  / n4 #* y * k * inf
+r = sin
+#r = y * n3 + k * y 	  #/ n4 #* y * k * inf
 puts r
 
 dr = r.diff(x)

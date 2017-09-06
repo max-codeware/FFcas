@@ -10,7 +10,9 @@ module Function
     end
     
     def diff(var)
-      return self.arg.diff(var) / self.arg
+      d = self.arg.diff(var) 
+      d.top = true
+      return d / self.arg
     end
     
     def to_s

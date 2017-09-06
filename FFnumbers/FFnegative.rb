@@ -50,6 +50,8 @@ module Function
         return self.val.val #.reduce
       elsif self.val.is_a? P_Infinity_Val
         return M_Infinity
+      elsif self.val == M_Infinity
+        return P_Infinity
       else
         val = @val
         @val = @val.reduce
@@ -197,10 +199,10 @@ module Function
     # * **returns**: Negative class in string format
     def to_s
       if self.val.is_a? Pow then
-        left =  "(-#{self.val.left.to_s})"
+        left =  "-#{self.val.left.to_s}"
         right = (self.val.right.is_a? Number) ? (self.val.right.to_s) : ("(#{self.val.right.to_s})")
         return "#{left}^#{right}"
-      elsif self.val.is_a? BinaryOp then
+      elsif self.val.is_a? Sum or self.val.is_a? Diff then
         return "-(#{self.val.to_s})"
       else
         return "-#{self.val.to_s}"

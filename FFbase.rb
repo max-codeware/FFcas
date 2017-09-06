@@ -124,6 +124,7 @@ module Function
     #
     # * **argument**: argument of the function
     def initialize(arg)
+      arg = arg.clone
       arg.top = false
       self.arg = arg
       self.top = true
@@ -153,8 +154,15 @@ module Function
     
     def *(obj)
       return nil unless self.top or self == obj
-      return Pow.new(self,Number.new(2)) if self == obj
-      return Prod.new(self,obj)
+      return Pow.new(self,Number.new(2)).reduce if self == obj
+      return  Prod.new(self,obj).reduce unless obj.is_a? Number
+      return Prod.new(obj,self).reduce
+    end
+    
+    def /(obj)
+      return nil unless self.top or self == obj
+      return Number.new 1 if self == obj
+      return Div.new(self,obj).reduce
     end
     
     def **(obj)
@@ -176,6 +184,7 @@ module Function
     #
     def reduce
       self.arg = self.arg.reduce
+      return self
     end
     
     # Inverts the sign of the function

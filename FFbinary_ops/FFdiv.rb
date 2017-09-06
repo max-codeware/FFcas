@@ -15,7 +15,7 @@ module Function
     end
     
     def +(obj)
-      return nil unless (slef.top) || (self =~ obj) || (self == obj)
+      return nil unless (self.top) || (self =~ obj) || (self == obj)
       if self == obj
         lft = self.left
         lft.top = true
@@ -60,7 +60,7 @@ module Function
     end
     
     def *(obj)
-      return nil unless (slef.top) || (self =~ obj) || (self == obj) || (obj.is_a? Constant) || (obj.is_a? Number)
+      return nil unless (self.top) || (self =~ obj) || (self == obj) || (obj.is_a? Constant) || (obj.is_a? Number)
       return Pow.new(self,Number.new(2)) if self == obj
       if self =~ obj
         if obj.is_a? Div
@@ -83,7 +83,7 @@ module Function
         else
           rht = self.right * obj
           if rht != nil
-            return return Div.new(self.left,rht)
+            return Div.new(self.left,rht)
           else
             return nil unless self.top
           end
@@ -118,6 +118,7 @@ module Function
       return Negative.new(Div.new(self.left,self.right.val)).reduce if self.right.is_a? Negative
       return self.left if self.right == 1
       return P_Infinity if self.right == 0
+      return self
     end
     
     def invert
@@ -137,7 +138,7 @@ module Function
     
     def to_s
       lft = (self.left.is_a? Sum or self.left.is_a? Diff) ? "(#{self.left.to_s})" : self.left.to_s
-      lft = (self.right.is_a? Sum or self.right.is_a? Diff) ? "(#{self.right.to_s})" : self.right.to_s
+      rht = (self.right.is_a? Sum or self.right.is_a? Diff) ? "(#{self.right.to_s})" : self.right.to_s
       return "#{lft}/#{rht}"
     end
     

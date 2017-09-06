@@ -136,7 +136,7 @@ module Function
     
     # * **returns**: argument of the function
     def arg
-      return arg
+      return @arg
     end
     
     def +(obj)

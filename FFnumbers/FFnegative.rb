@@ -50,6 +50,8 @@ module Function
         return self.val.val #.reduce
       elsif self.val.is_a? P_Infinity_Val
         return M_Infinity
+      elsif self.val == M_Infinity
+        return P_Infinity
       else
         val = @val
         @val = @val.reduce

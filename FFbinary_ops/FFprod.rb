@@ -81,15 +81,13 @@ module Function
                                                                 (obj.is_a? Number) || 
                                                                    (obj == P_Infinity) || 
                                                                      (obj == M_Infinity)
-      # return Number.new 0 if obj == 0
       return Pow.new(self,Number.new(2)).reduce if self == obj
       chk = first_chk(obj)
       return chk unless chk == nil
-      chk = second_chk(obj)
+      return self * obj.left * obj.right if obj.is_a? Prod
+      chk = second_chk
       return chk unless chk == nil
-      chk = third_chk(obj)
-      return chk unless chk == nil
-      return Prod.new(self,obj) unless obj.is_a? Number
+      return Prod.new(self,obj).reduce unless obj.is_a? Number
       return Prod.new(obj,self).reduce
     end
     
@@ -281,7 +279,7 @@ module Function
           myExp, objExp = self.right.right, obj.right
           myExp.top, objExp.top = true, true
           exp = myExp + objExp
-          rht = Pow.new(obj.left,exp)
+          rht = Pow.new(obj.left,exp).reduce
           return Prod.new(self.left,rht).reduce
         end
           objExp = obj.right
@@ -300,7 +298,6 @@ module Function
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do
      def second_chk(obj)
-       if (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
          lft = self.left * obj
          if lft != nil
            return Prod.new(lft,self.right).reduce
@@ -313,8 +310,7 @@ module Function
              return Prod.new(Number.new(2),self).reduce
            end
          end
-       end
-       return nil
+       # return nil
      end
      
      # Third Splitting of the method :*

@@ -40,7 +40,7 @@ module Function
           return Negative.new(Number.new((self.val - obj.val).abs)) 
         end
       end
-      if obj.is_a? BinaryOp
+      if (obj.is_a? Sum) || (obj.is_a? Diff)
         obj = obj.invert
         return self + obj
       end

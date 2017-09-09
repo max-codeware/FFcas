@@ -21,10 +21,10 @@ module Function
     #   * Numeric
     #   * Costant
     #   * BinaryOp and children
-    def initialize(val)
-      val = val.clone
-      val.top = false
-      @val = val
+    def initialize(val_)
+      val_ = val_.clone
+      val_.top = false
+      @val = val_
       self.top = true
     end
     
@@ -42,7 +42,7 @@ module Function
     #   * Negative if there's nothing to change
     def reduce
       @val = self.val.reduce
-      if self.val.is_a? BinaryOp then
+      if (self.val.is_a? Sum) || (self.val.is_a? Diff) then
         return self.val.invert
       elsif self.val == 0
         return Number.new 0

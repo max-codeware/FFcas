@@ -31,7 +31,9 @@ module Function
     end
     
     def diff(var)
-      return self * self.arg.diff(var)
+      s = self.clone
+      s.top = true
+      return s * self.arg.diff(var)
     end
     
     def to_s
@@ -90,6 +92,14 @@ module Function
       super
     end
     
+    def diff(var)
+      _arg = self.arg
+      _arg.top = true
+      d_arg = self.arg.diff(var)
+      d_arg.top = true
+      return d_arg / Sqrt.new(Number.new(1) - _arg ** Number.new(2))
+    end
+    
     def to_s
       return "asin(#{self.arg.to_s})"
     end
@@ -104,6 +114,14 @@ module Function
   
     def initialize(arg)
       super
+    end
+    
+    def diff(var)
+      _arg = self.arg
+      _arg.top = true
+      d_arg = self.arg.diff(var)
+      d_arg.top = true
+      return Negative.new(d_arg / Sqrt.new(Number.new(1) - _arg ** Number.new(2))).reduce
     end
     
     def to_s
@@ -122,6 +140,12 @@ module Function
       super
     end
     
+    def diff(var)
+      d_arg = self.arg.diff(var)
+      d_arg.top = true
+      return d_arg / Cos.new(self.arg) ** Number.new(2)
+    end
+    
     def to_s
       return "tan(#{self.arg.to_s})"
     end
@@ -136,6 +160,14 @@ module Function
   
     def initialize(arg)
       super
+    end
+    
+    def diff(var)
+      _arg = self.arg
+      _arg.top = true
+      d_arg = self.arg.diff(var)
+      d_arg.top = true
+      return d_arg / (Number.new(1) - _arg ** Number.new(2))
     end
     
     def to_s
@@ -155,15 +187,17 @@ module Function
     end
     
     def diff(var)
-      return self.arg.diff(var) / (Number.new(2) * self)
+      d_arg = self.arg.diff(var)
+      d_arg.top = true
+      return d_arg / (Number.new(2) * self)
     end
     
     def to_s
-      return "sqrt(#{self.atg.to_s})"
+      return "sqrt(#{self.arg.to_s})"
     end
     
     def to_b
-      return "Math::sqrt(#{self.atg.to_b})"
+      return "Math::sqrt(#{self.arg.to_b})"
     end
     
   end

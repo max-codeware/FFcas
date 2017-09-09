@@ -60,8 +60,8 @@ module Function
       return Diff.new(self,obj)
     end
     
-    # This method has been splitted into other tree ones due to the code lenght;
-    # See :first_chk, :second_chk, :third_chk
+    # This method has been splitted into other two ones due to the code lenght;
+    # See :first_chk, :second_chk
     #
     # * **argument**:
     #   * Negative
@@ -81,15 +81,13 @@ module Function
                                                                 (obj.is_a? Number) || 
                                                                    (obj == P_Infinity) || 
                                                                      (obj == M_Infinity)
-      # return Number.new 0 if obj == 0
       return Pow.new(self,Number.new(2)).reduce if self == obj
       chk = first_chk(obj)
       return chk unless chk == nil
-      chk = second_chk(obj)
+      return self * obj.left * obj.right if obj.is_a? Prod
+      chk = second_chk
       return chk unless chk == nil
-      chk = third_chk(obj)
-      return chk unless chk == nil
-      return Prod.new(self,obj) unless obj.is_a? Number
+      return Prod.new(self,obj).reduce unless obj.is_a? Number
       return Prod.new(obj,self).reduce
     end
     
@@ -285,7 +283,7 @@ module Function
           myExp, objExp = self.right.right, obj.right
           myExp.top, objExp.top = true, true
           exp = myExp + objExp
-          rht = Pow.new(obj.left,exp)
+          rht = Pow.new(obj.left,exp).reduce
           return Prod.new(self.left,rht).reduce
         end
           objExp = obj.right
@@ -304,7 +302,6 @@ module Function
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do
      def second_chk(obj)
-       if (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
          lft = self.left * obj
          if lft != nil
            return Prod.new(lft,self.right).reduce
@@ -317,39 +314,38 @@ module Function
              return Prod.new(Number.new(2),self).reduce
            end
          end
-       end
-       return nil
+       # return nil
      end
      
      # Third Splitting of the method :*
      #
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do 
-     def third_chk(obj)
-       if obj.is_a? Prod
-         res = self * obj.left
-         if res != nil
-           res *= obj.right
-           if res != nil
-             return res
-           else
-             return nil unless self.top
-             return Prod.new(prod,obj.right)
-           end
-         else
-           res = Prod.new(self,obj.left) * obj.right
-           if res != nil
-             return res
-           else
-             return nil unless self.top
-             return Prod.new(self,obj)
-           end
-         end
-       end
-       return nil
-     end
-    
-  end
+#     def third_chk(obj)
+#       if obj.is_a? Prod
+#         res = self * obj.left
+#         if res != nil
+#           res *= obj.right
+#           if res != nil
+#             return res
+#           else
+#             return nil unless self.top
+#             return Prod.new(prod,obj.right)
+#           end
+#         else
+#           res = Prod.new(self,obj.left) * obj.right
+#           if res != nil
+#             return res
+#           else
+#             return nil unless self.top
+#             return Prod.new(self,obj)
+#           end
+#         end
+#       end
+#       return nil
+#     end
+#    
+#  end
 
 end
 

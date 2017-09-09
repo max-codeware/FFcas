@@ -60,8 +60,8 @@ module Function
       return Diff.new(self,obj)
     end
     
-    # This method has been splitted into other tree ones due to the code lenght;
-    # See :first_chk, :second_chk, :third_chk
+    # This method has been splitted into other two ones due to the code lenght;
+    # See :first_chk, :second_chk
     #
     # * **argument**:
     #   * Negative
@@ -321,31 +321,31 @@ module Function
      #
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do 
-     def third_chk(obj)
-       if obj.is_a? Prod
-         res = self * obj.left
-         if res != nil
-           res *= obj.right
-           if res != nil
-             return res
-           else
-             return nil unless self.top
-             return Prod.new(prod,obj.right)
-           end
-         else
-           res = Prod.new(self,obj.left) * obj.right
-           if res != nil
-             return res
-           else
-             return nil unless self.top
-             return Prod.new(self,obj)
-           end
-         end
-       end
-       return nil
-     end
-    
-  end
+#     def third_chk(obj)
+#       if obj.is_a? Prod
+#         res = self * obj.left
+#         if res != nil
+#           res *= obj.right
+#           if res != nil
+#             return res
+#           else
+#             return nil unless self.top
+#             return Prod.new(prod,obj.right)
+#           end
+#         else
+#           res = Prod.new(self,obj.left) * obj.right
+#           if res != nil
+#             return res
+#           else
+#             return nil unless self.top
+#             return Prod.new(self,obj)
+#           end
+#         end
+#       end
+#       return nil
+#     end
+#    
+#  end
 
 end
 

@@ -141,6 +141,20 @@ module Function
       return Pow.new(self,obj).reduce
     end
     
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Sum (see #invert)
+    def -@
+      return self.invert
+    end
+    
     # Calls reduce of BinaryOp and then simplifies the sum according to the cases:
     # * 0 - y    => -y
     # * x - 0    => x

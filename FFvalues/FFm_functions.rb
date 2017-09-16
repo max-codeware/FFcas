@@ -47,7 +47,7 @@ module Function
       if self.arg.is_a? Pow
         exp, exp.top = self.arg.right, true
         return exp * Log.new(self.arg.left)
-      elsif self.arg == P_infinity
+      elsif self.arg == P_Infinity
         return P_Infinity
       elsif (self.arg == M_Infinity) || (self.arg == 1)
         return Number.new 0
@@ -69,7 +69,7 @@ module Function
       return "Math::log(#{self.arg.to_b})"
     end
   end
-  
+ 
   ##
   # This class represents the exponential, describing its behaviour
   #
@@ -191,7 +191,7 @@ module Function
     end
     
   end
-  
+   
   ##
   # This class represents the cos, describing its behaviour
   #
@@ -294,8 +294,8 @@ module Function
     def reduce
       self.red     
       if (self.arg.is_a? Number) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
-        raise "Math Error: asin(x) => |x| > 1" (if self.arg > 1) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
-        return PI / Number.new 2 if self.arg == 1
+        raise "Math Error: asin(x) => |x| > 1" if (self.arg > 1) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
+        return PI / Number.new(2) if self.arg == 1
       end
       return Negative.new(PI / Number.new(2)) if self.arg.is_a? Negative and self.arg.arg == 1
       return Number.new 0 if sel.arg == 0
@@ -356,7 +356,7 @@ module Function
     def reduce
       self.red     
       if (self.arg.is_a? Number) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
-        raise "Math Error: asin(x) => |x| > 1" (if self.arg > 1) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
+        raise "Math Error: asin(x) => |x| > 1" if (self.arg > 1) || (self.arg == P_Infinity) || (self.arg == M_Infinity)
         return Number.new 1 if self.arg == 1
       end
       return PI if self.arg.is_a? Negative and self.arg.arg == 1
@@ -479,7 +479,7 @@ module Function
       if self.arg == M_Infinity
         return Negative.new(PI / Number.new(2))
       elsif self.arg == P_Infinity
-        return PI / Number.new 2
+        return PI / Number.new(2)
       elsif self.arg == 0
         return 0
       end
@@ -537,7 +537,7 @@ module Function
       self.red
       if self.arg.is_a? Number
          return Number.new(Math.sqrt(self.arg)) if self.arg == Math.sqrt(sel.arg).to_i ** 2
-      if self.arg.is_a? Pow
+      elsif self.arg.is_a? Pow
         if self.arg.right.is_a? Number
           return Pow.new(self.arg.left,Number.new((Self.arg.right.val / 2.0).to_i)).reduce if self.arg.right.val % 2 == 0
         end
@@ -556,5 +556,7 @@ module Function
     end
     
   end
-  
+ 
 end
+
+

@@ -12,28 +12,36 @@ module Function
   #
   # Author:: Massimiliano Dal Mas (mailto:max.codeware@gmail.com)
   # License:: Distributed under MIT license
-  class Parser
+  class FFparser
   
     BinOpS = {
-               "+" => lambda do |a,b|
-                        return a+b
-                      end,
-               "-" => lambda do |a,b|
-                        return (a || 0) - b
-                      end,
-               "*" => lambda do |a,b|
-                        return a * b
-                      end,
-               "/" => lambda do |a,b|
-                        return a / b
-                      end,
-               "^" => lambda do |a,b|
-                        return a ^ b
-                      end
+               "+"    => lambda do |a,b|
+                           return a+b
+                         end,
+                      
+               "-"    => lambda do |a,b|
+                           return (a || 0) - b
+                         end,
+                         
+               "*"    => lambda do |a,b|
+                           return a * b
+                         end,
+                         
+               "/"    => lambda do |a,b|
+                           return a / b
+                         end,
+                         
+               "^"    => lambda do |a,b|
+                           return a ^ b
+                         end,
+                         
+               "diff" => lambda do |a,b|
+                           return a.diff(b)
+                         end
              }
     
     # Creates a new object and initializes new variables
-    def initialize()
+    def initialize
       @i = 0
       @val = []
       @op  = []
@@ -51,7 +59,11 @@ module Function
       end
     end
     
-    def parse_delimited(stream)
+    def switch
+    
+    end
+    
+    def parse_delimited
     
     end
     
@@ -67,7 +79,7 @@ module Function
     
     end
     
-    private
+   private
     
     # Saves the next state of ffparser
     #
@@ -79,6 +91,35 @@ module Function
     # * **returns**: current state of ffparser 
     def state
       return @state
+    end
+    
+    def tk_val
+      return current_tk[1]
+    end
+    
+    def tk_att
+      return current_tk[1]
+    end
+    
+    def current_tk
+      return @tk[@i]
+    end
+    
+    def compress_tk(tk_att)
+      case tk_att
+        when :SIN, :COS, :ASIN, :ACOS, :TAN, :ATAN, :LOG, :EXP, :SQRT
+          return :math_f
+        when :E, :PI, :INF, :N_INF
+          return :math_c
+        when :INTEGER, :FLOAT
+          return :number
+        when :SUM_OP, :DIFF_OP, :MUL_OP, :DIV_OP, :POW_OP
+          return :op
+        when :DIFF
+          return :keyword
+        else
+          return tk_att
+      end
     end
     
     # Establishes the operator priority
@@ -98,6 +139,9 @@ module Function
           return 3
       end
     end
+    
   end
+  
+  FFParser = FFparser.new
   
 end

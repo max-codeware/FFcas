@@ -108,7 +108,21 @@ module Function
       return Pow.new(self.right,exp).reduce
     end
     
-    # Thells whether obj is similar so self. That is: x^n =~ x^k
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
+    end
+    
+    # Tells whether obj is similar so self. That is: x^n =~ x^k
     def =~(obj)    
       return self.left == obj.left if obj.is_a? Pow
       return self.left == obj

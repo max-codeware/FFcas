@@ -196,6 +196,20 @@ module Function
       end
     end
     
+    # Implementation of unary plus
+    #
+    # * **returns**: sel
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
+    end
+    
     # * **returns**: Negative class in string format
     def to_s
       if self.val.is_a? Pow then
@@ -238,7 +252,7 @@ module Function
     # * **returns**: result of the differential
     def diff(var)
       if self.depend? var
-        diff = Negative.new(self.arg.diff(var)).reduce 
+        diff = Negative.new(self.val.diff(var)).reduce 
         # diff.top = false
         return diff
       else

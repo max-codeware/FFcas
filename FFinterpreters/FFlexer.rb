@@ -17,6 +17,8 @@ module Function
   # License:: Distributed under MIT license
   class FFlexer
     PATTERNS = { :SIN      => /^[sS][iI][nN]/,
+                 :DIFF     => /^[Dd][Ii][Ff][Ff]/,
+                 :ID       => /^[#][a-zA-Z_][a-zA-Z0-9_]*/,
                  :COS      => /^[Cc][Oo][Ss]/,
                  :ASIN     => /^[Aa][Ss][Ii][Nn]/,
                  :ACOS     => /^[Aa][Cc][Oo][Ss]/,
@@ -40,9 +42,11 @@ module Function
                  :PI       => /^[P][I]/,
                  :E        => /^[e]/,
                  :SPACE    => /^[" "]/,
+                 :RETURN   => /^[\n]/,
+                 :ASSIGN   => /^[=]/,
                  :UNKNOWN  => /./
                }
-    
+
     # Main function that tokenizes the input string
     #
     # * **argument**: string to tokenize
@@ -121,6 +125,7 @@ module Function
     end
   end
   
+  FFlex = FFlexer.new
 
 end
 

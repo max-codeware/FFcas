@@ -158,6 +158,20 @@ module Function
       return Pow.new(self,obj).reduce
     end
     
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: same of #invert
+    def -@
+      return self.invert
+    end
+    
     # Thells whether obj is similar so self. That is: 2*x =~ x (x is in common)
     def =~(obj)
       return false unless self.left.is_a? Number
@@ -345,7 +359,7 @@ module Function
 #       return nil
 #     end
 #    
-#  end
+  end
 
 end
 

@@ -131,14 +131,12 @@ module Function
     #   * Numeric
     def /(obj)
       return nil unless self.top
-      if obj.is_a? BinaryOp then
-        return Div.new(self,obj).reduce
-      elsif obj.is_a? Negative then
-        return Negative.new(self,obj.val).reduce
+      if obj.is_a? Negative then
+        return Negative.new(self / obj.val).reduce
       elsif self == obj then
         return Number.new 1
       else
-        return Div.new(self,obj)
+        return Div.new(self,obj).reduce
       end
     end
     
@@ -155,6 +153,20 @@ module Function
     def **(obj)
       return nil unless self.top
       return Pow.new(self,obj)
+    end
+    
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
     end
     
     # Calculates the differential

@@ -81,6 +81,20 @@ module Function
       return Pow.new(self,obj)
     end
     
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
+    end
+    
     def invert
       inv = Negative.new self
       inv.top = self.top

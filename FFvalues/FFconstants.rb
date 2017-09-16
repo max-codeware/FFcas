@@ -127,6 +127,20 @@ module Function
       return Pow.new(self,Number.new(2))
     end
     
+    # Implementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Implementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
+    end
+    
     # Reduce is adummy method for a constant, as it returns always self
     #
     # * **returns**: self

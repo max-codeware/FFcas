@@ -170,6 +170,20 @@ module Function
       return Pow.new(self,obj)
     end
     
+    # Inmplementation of unary plus
+    #
+    # * **returns**: self
+    def +@
+      return self
+    end
+    
+    # Inmplementation of unary minus
+    #
+    # * **returns**: new Negative (arg -> self)
+    def -@
+      return self.invert
+    end
+    
     # Checks if obj equals to the Function
     #
     # * **argument**: object for the comparison

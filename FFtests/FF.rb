@@ -2,7 +2,7 @@
 
 files = Dir["*.rb","FFbinary_ops/*.rb","FFvalues/*.rb","FFinterpreters/*.rb","FFsystem/*.rb"]
 files.each do |file|
-  require_relative file unless Dir["FFtests.rb","FFfunction.rb"].include? file
+  require_relative '../' + file unless Dir["../FFfunction.rb"].include? file
 end
 
 include Function

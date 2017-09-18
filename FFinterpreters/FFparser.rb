@@ -69,7 +69,7 @@ module Function
       make_op
       last_val = @val.pop
       FFenv.set_var(@pending,last_val) if @pending
-      return last_val # unless @pending and @val.size > 0
+      return last_val unless @pending and FFenv.scanning	
     end
     
     def switch

@@ -112,7 +112,7 @@ module Function
     #
     # * **argument**: expression to tokenize (string)
     def context=(exp)
-      @context = exp
+      @context = exp.chomp
     end
     
     # Adds a new error index (error tracking)

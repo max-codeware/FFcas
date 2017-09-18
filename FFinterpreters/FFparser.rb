@@ -67,8 +67,9 @@ module Function
         # @i +=1
       end
       make_op
-      FFenv.set_var(@pending,@val.pop) if @pending
-      return @val.pop unless @pending and @val.size > 0
+      last_val = @val.pop
+      FFenv.set_var(@pending,last_val) if @pending
+      return last_val # unless @pending and @val.size > 0
     end
     
     def switch

@@ -179,7 +179,7 @@ module Function
     def diff(var)
       lft, rht = self.left, self.right
       lft.top, rht.top = true, true
-      d_lft == lft.diff(var)
+      d_lft = lft.diff(var)
       exp = rht - Number.new(1)
       return rht *(lft ** exp) * d_lft
     end

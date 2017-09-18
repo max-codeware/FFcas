@@ -23,7 +23,7 @@ module Function
     
     def get_var(name)
       raise "iMode Error: cannot get variables if iMode is disabled" unless self.iMode
-      raise "Argument Error: variable #{name} not defined" unless @vars.keys.include? name
+      raise "Name Error: variable #{name} not defined" unless @vars.keys.include? name
       return @vars[name]
     end
 

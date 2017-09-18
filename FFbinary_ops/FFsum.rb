@@ -47,6 +47,7 @@ module Function
       #  return nil unless self.top
       #  return Sum.new(self,obj).reduce   
       end
+      return self - obj.val if obj.is_a? Negative
       lft = self.left + obj
       if !(lft == nil) then
         return Sum.new(lft,self.right).reduce
@@ -87,6 +88,7 @@ module Function
         #  return Diff.new(self,obj)
         end
       end
+      return self + obj.val if obj.is_a? Negative
       lft = self.left - obj
       if !(lft == nil) then
         return Sum.new(lft,self.right).reduce

@@ -34,8 +34,9 @@ module Function
     #   * +nil+ if the operation can't be performed
     def +(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj)
+      return self - obj.val if obj.is_a? Negative
       return Prod.new(Number.new(2),self) if self == obj
-      lft = ((self =~ obj) && (obj.is_a? Prod)) ? (self.left + obj.left) : (self.left + Number.new(1))
+      lft = (obj.is_a? Prod) ? (self.left + obj.left) : (self.left + Number.new(1))
       return Prod.new(lft,self.right) if self =~ obj
       return Sum.new(self,obj).reduce
     end
@@ -54,9 +55,10 @@ module Function
     #   * +nil+ if the operation can't be performed
     def -(obj)
       return nil unless (self.top) || (self == obj) || (self =~ obj)
+      return self + obj.val if obj.is_a? Negative
       return Number.new 0 if self == obj
       lft = ((self =~ obj) && (obj.is_a? Prod)) ? (self.left - obj.left) : (self.left - Number.new(1))
-      return Prod.new(lft,self) if self =~ obj
+      return Prod.new(lft,self.right) if self =~ obj
       return Diff.new(self,obj)
     end
     
@@ -85,7 +87,7 @@ module Function
       chk = first_chk(obj)
       return chk unless chk == nil
       return self * obj.left * obj.right if obj.is_a? Prod
-      chk = second_chk
+      chk = second_chk(obj)
       return chk unless chk == nil
       return Prod.new(self,obj).reduce unless obj.is_a? Number
       return Prod.new(obj,self).reduce

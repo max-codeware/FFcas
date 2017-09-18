@@ -10,6 +10,7 @@ module Function
   # using regular expressions. 	Returned tokens are arrays having 
   # this structure:
   # * ID
+  # * position
   # * value
   #
   #
@@ -27,10 +28,13 @@ module Function
                  :LOG      => /^[Ll][Oo][Gg]/,
                  :EXP      => /^[Ee][Xx][Pp]/, 
                  :SQRT     => /^[Ss][Qq][Rr][Tt]/,
+                 :PI       => /^[P][I]/,
+                 :E        => /^[e]/,
                  :INF      => /^[I][N][F]/,
                  :N_INF    => /^[N][_][I][N][F]/,
                  :VARIABLE => /^[a-zA-Z_][a-zA-Z0-9_]*/, 
                  :INTEGER  => /^[1-9][0-9]*/,
+                 :ZERO     => /^[0]/,
                  :FLOAT    => /^[0-9]*[.][0-9]*/,
                  :SUM_OP   => /^[+]/,
                  :DIFF_OP  => /^[-]/,
@@ -39,10 +43,8 @@ module Function
                  :POW_OP   => /^[\^]/,                 
                  :LPAR     => /^[(]/,
                  :RPAR     => /^[)]/,
-                 :PI       => /^[P][I]/,
-                 :E        => /^[e]/,
                  :SPACE    => /^[" "]/,
-                 :RETURN   => /^[\n]/,
+                 :EOL      => /^[\n]/,
                  :ASSIGN   => /^[=]/,
                  :UNKNOWN  => /./
                }
@@ -61,13 +63,14 @@ module Function
           matched = PATTERNS[key].match(exp)
           if matched then
             err_track index if key == :UNKNOWN
-            stream << [key,matched.to_s] unless key == :SPACE
+            stream << [key,index,matched.to_s] unless key == :SPACE
             index += matched.to_s.size
             exp = exp [matched.to_s.size...exp.size]
             break
           end
         end
       end
+      stream << [:EOL,index,"\n"] unless stream.last != nil and stream.last[0] == :EOL
       return stream
     end
     
@@ -89,6 +92,11 @@ module Function
       end
     end
     
+    # * **returns**: current FFlexer context
+    def context
+      return @context
+    end
+    
    private 
     
     # Raises a fflex error (when a char can't be matched)
@@ -105,11 +113,6 @@ module Function
     # * **argument**: expression to tokenize (string)
     def context=(exp)
       @context = exp
-    end
-    
-    # * **returns**: current FFlexer context
-    def context
-      return @context
     end
     
     # Adds a new error index (error tracking)

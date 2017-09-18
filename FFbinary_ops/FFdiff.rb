@@ -50,7 +50,7 @@ module Function
         #puts self.right.top
         rht = self.right.invert + obj
         if !(rht == nil)
-          return Diff.new(self.left,rht).reduce
+          return Sum.new(self.left,rht).reduce
         else
           return nil unless self.top
           return Sum.new(self,obj).reduce

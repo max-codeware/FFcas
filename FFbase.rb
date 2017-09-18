@@ -142,14 +142,15 @@ module Function
     
     def +(obj)
       return nil unless self.top or self == obj
-      return Prod.new(Number.new(2)) if self == obj
-      return Sum.new(self,obj)
+      return Prod.new(Number.new(2),self).reduce if self == obj
+      return obj + self if obj.is_a? BinaryOp
+      return Sum.new(self,obj).reduce
     end
     
     def -(obj)
       return nil unless self.top or self == obj
       return Number.new 0 if self == obj
-      return Diff.new(self,obj)
+      return Diff.new(self,obj).reduce
     end
     
     def *(obj)
@@ -167,7 +168,7 @@ module Function
     
     def **(obj)
       return nil unless self.top or self == obj
-      return Pow.new(self,obj)
+      return Pow.new(self,obj).reduce
     end
     
     # Inmplementation of unary plus

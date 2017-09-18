@@ -61,14 +61,14 @@ module Function
       return Number.new(self.val * obj.val) if obj.is_a? Number
       return obj * self if obj.is_a? BinaryOp
       return Negative.new(self * obj.val) if obj.is_a? Negative
-      return Prod.new(self,obj) 
+      return Prod.new(self,obj).reduce 
     end
     
     def /(obj)
       return nil unless (self.top) || (obj.is_a? Number) || (obj == P_Infinity) || (obj == M_Infinity)
       return Number.new 0 if (obj == P_Infinity) || (obj == M_Infinity)
       return Negative.new(Div.new(self,obj.val)) if obj.is_a? Negative
-      return Div.new(self,obj)
+      return Div.new(self,obj).reduce
     end
     
     def **(obj)
@@ -78,7 +78,7 @@ module Function
       return P_Infinity if obj == P_Infinity
       return Number.new 0 if obj == M_Infinity
       return Number.new(self.val ** obj.val) if obj.is_a? Number
-      return Pow.new(self,obj)
+      return Pow.new(self,obj).reduce
     end
     
     # Implementation of unary plus

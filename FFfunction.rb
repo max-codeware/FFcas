@@ -1,10 +1,10 @@
 #! /usr/bin/env ruby
 
-#module Function
+# module Function
 #  def self.parse
 #    
 #  end
-#end
+# end
 
 files = Dir["*.rb","FFbinary_ops/*.rb","FFvalues/*.rb","FFinterpreters/*.rb"]
 files.each do |file|
@@ -12,7 +12,6 @@ files.each do |file|
 end
 
 
-include Function
 #class FFfunction
 #  include Function
 #  

@@ -177,6 +177,7 @@ module Function
     # * **argument**: variable according to the differential must be done
     # * **returns**: Children of BinaryOp or Function element
     def diff(var)
+      return Number.new(0) unless self.depend? var
       lft, rht = self.left, self.right
       lft.top, rht.top = true, true
       d_lft = lft.diff(var)

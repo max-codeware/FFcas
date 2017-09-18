@@ -106,7 +106,7 @@ module Function
     #   * BinaryOp and children
     #   * Numeric
     def *(obj)
-      return nil unless self.top
+      return nil unless self.top or self == obj
       if obj.is_a? BinaryOp then
         return (obj * self).reduce
       elsif obj.is_a? Negative then
@@ -130,7 +130,7 @@ module Function
     #   * BinaryOp and children
     #   * Numeric
     def /(obj)
-      return nil unless self.top
+      return nil unless self.top or self == obj
       if obj.is_a? Negative then
         return Negative.new(self / obj.val).reduce
       elsif self == obj then

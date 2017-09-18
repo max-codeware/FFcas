@@ -77,7 +77,7 @@ module Function
     #   * Children of Constant
     #   * Children of BinaryOp
     #   * +nil+ if the operation can't be performed
-    def *(obj)
+    def *(obj)     
       return nil unless (self.top) || (self == obj) || (self =~ obj) || 
                                                              (obj == 0) || 
                                                                 (obj.is_a? Number) || 
@@ -264,7 +264,7 @@ module Function
       d_lft = lft.diff(var); d_lft.top = true
       d_lft *= rht
       d_rht = rht.diff(var); d_rht.top = true
-      d_rht *= lft
+      d_rht = lft * d_rht
       return Sum.new(d_lft,d_rht).reduce
     end
     
@@ -295,18 +295,18 @@ module Function
      # * **returns**: new Prod; +nil+ if there's nothing to do
      def first_chk(obj)
        if (self =~ obj) && (obj.is_a? Pow)
-        if self.right.is_a? Pow
-          myExp, objExp = self.right.right, obj.right
-          myExp.top, objExp.top = true, true
-          exp = myExp + objExp
-          rht = Pow.new(obj.left,exp).reduce
-          return Prod.new(self.left,rht).reduce
-        end
-          objExp = obj.right
-          objExp.top = true
-          objExp += Number.new 1
-          rht = Pow.new(obj.left,objExp).reduce
-          return Prod.new(self.left,rht).reduce
+         if self.right.is_a? Pow
+           myExp, objExp = self.right.right, obj.right
+           myExp.top, objExp.top = true, true
+           exp = myExp + objExp
+           rht = Pow.new(obj.left,exp).reduce
+           return Prod.new(self.left,rht).reduce
+         end
+         objExp = obj.right
+         objExp.top = true
+         objExp += Number.new 1
+         rht = Pow.new(obj.left,objExp).reduce
+         return Prod.new(self.left,rht).reduce
        elsif self =~ obj
          return Prod.new(self.left,Pow.new(self.right,Number.new(2))).reduce
        end
@@ -318,18 +318,18 @@ module Function
      # * **argument**: see :*
      # * **returns**: new Prod; +nil+ if there's nothing to do
      def second_chk(obj)
-         lft = self.left * obj
-         if lft != nil
-           return Prod.new(lft,self.right).reduce
+       lft = self.left * obj
+       if lft != nil
+         return Prod.new(lft,self.right).reduce
+       else
+         rht = self.right * obj
+         if rht != nil
+           return Prod.new(self.left,rht).reduce
          else
-           rht = self.right * obj
-           if rht != nil
-             return Prod.new(self.left,rht).reduce
-           else
-             return nil unless self.top
-             return Prod.new(Number.new(2),self).reduce
-           end
+           return nil unless self.top
+           return Prod.new(self,obj).reduce
          end
+       end
        # return nil
      end
      

@@ -9,7 +9,8 @@ Download the .zip file from https://github.com/max-codeware/FFcas, unpack it and
 the folder FFcas is saved in.
 Then, type:
 ```sh
-./FFtests/FF.rb
+$ cd FFtests
+$ ./FF.rb
 ```
 and a simple interactive cas will start.
 
@@ -46,7 +47,7 @@ The supported constants are:
 * N_INF (negative infinity)
 
 
-it is also posible to write a file with the same rules, and the type `./FFtests/FF.rb /path/to/the/file.ff`
+it is also posible to write a file with the same rules, and the type `./FF.rb /path/to/the/file.ff`
 anf FFcas will scan your file. Everything that's not an assignment will be printed out.
 
 ## Contributing:

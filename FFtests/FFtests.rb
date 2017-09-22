@@ -2,12 +2,12 @@
 
 # require 'pry-byebug'
 # binding.pry
-
+=begin
 files = Dir["*.rb","FFbinary_ops/*.rb","FFvalues/*.rb","FFinterpreters/*.rb"]
 files.each do |file|
   require_relative file unless Dir["FFtests.rb","FFfunction.rb","FF.rb"].include? file
 end
-=begin
+
 x = Function::Variable.new "x"
  y = Function::Variable.new "y"
  k = Function::Variable.new "k"
@@ -39,7 +39,7 @@ puts x + (sin - n3) + x
 dr = r.diff(x)
 
 puts "d(#{r.to_s})/dx = #{dr.to_s}"
-=end
+
 
 include Function
 f = FFParser.parse("f^3*g^2")
@@ -47,8 +47,7 @@ g = FFParser.parse("f")
 x = FFParser.parse "x"
 puts f.diff(g)
 #puts b
-
-
+=end
 
 
 

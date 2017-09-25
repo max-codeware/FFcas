@@ -215,10 +215,12 @@ module Function
       elsif self.left.is_a? Number and self.right.is_a? Number
         return self.left * self.right
       elsif self.left == self.right
-        return Pow.new(self.left,Number.new(2))
+        return Pow.new(self.left,Number.new(2)).reduce
       elsif self.left == 1
+        self.right.top = self.top
         return self.right
       elsif self.right == 1
+        self.left.top = self.top
         return self.left
       elsif self.left.is_a? Negative
         return Negative.new(Prod.new(self.left.val,self.right)).reduce

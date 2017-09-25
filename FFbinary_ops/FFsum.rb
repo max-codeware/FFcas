@@ -195,8 +195,10 @@ module Function
       elsif self.right == M_Infinity
         return Diff.new(self.left,P_Infinity).reduce
       elsif self.left == 0
+        self.right.top = self.top
         return self.right
       elsif self.right == 0
+        self.left.top = self.top
         return self.left
       elsif self.left == self.right
         return Prod.new(Number.new(2),self.left)

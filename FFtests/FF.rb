@@ -1,9 +1,6 @@
 #! /usr/bin/env ruby
 
-files = Dir["../*.rb","../FFbinary_ops/*.rb","../FFvalues/*.rb","../FFinterpreters/*.rb","../FFsystem/*.rb"]
-files.each do |file|
-  require_relative File.expand_path(file) unless Dir["../FFfunction.rb"].include? file
-end
+require_relative "../FFfunction.rb"
 
 include Function
 

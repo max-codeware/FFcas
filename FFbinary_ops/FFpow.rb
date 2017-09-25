@@ -17,7 +17,7 @@ module Function
     
     # See BinaryOp
     def initialize(l,r)
-     super
+      super
     end
     
     # * **argument**:
@@ -144,7 +144,10 @@ module Function
     # * x ^ 0           => 0
     def reduce
       self.red
-      return self.left if self.right == 1
+      if self.right == 1
+        self.left.top = self.top
+        return self.left 
+      end
       raise "Math Error: ∞^0" if (self.left == P_Infinity or self.left == M_Infinity) or (self.right == 0)
       raise "Math Error: 1^∞" if self.left == 1 and (self.right == P_Infinity or self.right == M_Infinity)
       if self.left.is_a? Number 
@@ -172,7 +175,7 @@ module Function
     end
     
     # Performs the differential of a power:
-    # d(x^y) = y * x ^ (y - 1)
+    # d(x^y) = (x ^ y) * (d(y) * ln(x) + y * d(x)/x)
     #
     # * **argument**: variable according to the differential must be done
     # * **returns**: Children of BinaryOp or Function element
@@ -181,8 +184,14 @@ module Function
       lft, rht = self.left, self.right
       lft.top, rht.top = true, true
       d_lft = lft.diff(var)
-      exp = rht - Number.new(1)
-      return rht *(lft ** exp) * d_lft
+      d_rht = rht.diff(var)
+      if d_rht == 0
+        return lft ** (rht - Number.new(1)) * rht * d_lft
+      elsif d_lft == 0
+        return (lft ** rht) * d_rht * Log.new(lft)
+      else 
+        return (lft ** rht) * (d_rht * Log.new(lft) + rht * d_lft / lft)
+      end
     end
     
     # * **returns**: string representation of the class
